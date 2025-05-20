@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{# ✅ Ce bloc surcharge celui de base.html.twig pour ajouter ton propre CSS #}
+{% block stylesheets %}
+     {# ← Important pour ne pas supprimer les styles existants #}
+    {{ parent() }}
+    
+     {# Ici, {{ parent() }} insère le contenu du bloc du base.html.twig, puis tu ajoutes ta propre feuille de style. #}
+    <link rel="stylesheet" href="{{ asset('assets/styles/home.css') }}">
+    {# <link rel="stylesheet" href="assets/styles/home.css">/ #}
+{% endblock %}
+
+{# {{ asset('...') }} est une fonction Twig très utilisée dans Symfony. Elle sert à générer le chemin complet vers un fichier situé dans le dossier public/, qui est la racine "visible" de ton site web. #}
+
+
+{% block title %}Hello HomeCdgdgontroller!{% endblock %}
+{% block fff  %}
+  {{ parent() }}
+    
+  <h1>  bonjour 22222 </h1>
+
+{% endblock %}
+
+
+{% block body %}
+
+
+<div class="example-wrapper">
+    <h1> {{ controller_name }}! ✅</h1>
+    <p class="red"> {{test1}}  </p>
+    
+
+
+
+
+
+</div>
+{% endblock %}
