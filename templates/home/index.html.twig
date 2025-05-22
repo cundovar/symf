@@ -2,37 +2,62 @@
 
 {# ✅ Ce bloc surcharge celui de base.html.twig pour ajouter ton propre CSS #}
 {% block stylesheets %}
-     {# ← Important pour ne pas supprimer les styles existants #}
-    {{ parent() }}
-    
-     {# Ici, {{ parent() }} insère le contenu du bloc du base.html.twig, puis tu ajoutes ta propre feuille de style. #}
-    <link rel="stylesheet" href="{{ asset('assets/styles/home.css') }}">
-    {# <link rel="stylesheet" href="assets/styles/home.css">/ #}
+	{# ← Important pour ne pas supprimer les styles existants #}
+	{{ parent() }}
+
+	{# Ici, {{ parent() }} insère le contenu du bloc du base.html.twig, puis tu ajoutes ta propre feuille de style. #}
+	<link
+	rel="stylesheet" href="{{ asset('styles/home.css') }}">
+{# <link rel="stylesheet" href="assets/styles/home.css">/ #}
 {% endblock %}
 
 {# {{ asset('...') }} est une fonction Twig très utilisée dans Symfony. Elle sert à générer le chemin complet vers un fichier situé dans le dossier public/, qui est la racine "visible" de ton site web. #}
 
 
-{% block title %}Hello HomeCdgdgontroller!{% endblock %}
-{% block fff  %}
-  {{ parent() }}
-    
-  <h1>  bonjour 22222 </h1>
+{% block javascripts %}
+	{{parent()}}
+	<script src=" {{ asset('script/home.js') }} "></script>
 
 {% endblock %}
 
 
+{% block title %}
+	home
+{% endblock %}
+
+
+
+
 {% block body %}
+{% if app.user and is_granted('ROLE_ADMIN') %}
+
+<P>TU ES ADMIN </P>
+{% endif %}
+
+	{% if app.user %}
 
 
-<div class="example-wrapper">
-    <h1> {{ controller_name }}! ✅</h1>
-    <p class="red"> {{test1}}  </p>
-    
+		<h2 class="text-2xl ">
+			Bonjour
+			{{ app.user.username}}
+		</h2>
+
+		{# <p>{{ dump(session.get('security_main')) }} </p>
+		<p>{{ dump(session.all) }} </p> #}
+		{{ app.request.query.get('page') }}
+
+		<p>{{ app.request.query.get('page') }}
+		</p>
+
+	{% endif %}
 
 
+{% endblock %}
 
 
+{% block metaDescription %}
 
-</div>
+	{{parent()}}
+
+	<meta name="description" content="page home">
 {% endblock %}
