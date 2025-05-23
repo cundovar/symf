@@ -14,16 +14,37 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+
+
+// cette class definit les champs du formulaire de registration ainsi que les contraintes
+
+
 class RegistrationForm extends AbstractType
 {
+
+    
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+    
+
+        // construit le formulaire avec les chompas demandés
+
         $builder
 
-            ->add('email',EmailType::class)
-            ->add('telephone')
+            ->add('email',EmailType::class,[
+                'attr' => [
+                    'class' => 'form-control ',
+                    'placeholder' => 'Email',
+                    
+                 
+                    
+                    
+                    
+            ]])
+
+            ->add('telephone',TextType::class)
             ->add('adresse',TextType::class)
-            ->add('username')
+            ->add('username',TextType::class)
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [

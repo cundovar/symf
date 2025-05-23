@@ -21,6 +21,9 @@ class Produit
     #[ORM\Column(length: 255)] // colonne name de type string de longueur 255
     private ?string $nom = null;
 
+    #[ORM\ManyToOne(inversedBy: 'user')]
+    private ?Category $category = null;
+
     // getter et setter
 
     public function getId(): ?int
@@ -36,6 +39,18 @@ class Produit
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
