@@ -7,10 +7,10 @@
     <h1>Ajouter un produit (manuellement)</h1>
 
     {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
+        <div class=" flash-message alert alert-success">{{ message }}</div>
     {% endfor %}
 h
-    <form method="POST">
+    <form method="POST"  enctype="multipart/form-data">
         <div class="mb-3">
             <label for="nom" class="form-label">Nom</label>
             <input type="text" class="form-control" id="nom" name="nom" required>
@@ -28,7 +28,7 @@ h
 
         <div class="mb-3">
             <label for="img" class="form-label">Image (URL)</label>
-            <input type="text" class="form-control" id="img" name="img">
+            <input type="file" class="form-control" id="img" name="img">
         </div>
 
         <div class="mb-3">
@@ -40,6 +40,14 @@ h
                 {% endfor %}
             </select>
         </div>
+
+           <div class="mb-3">
+            <label for="stock" class="form-label">stock</label>
+            <input type="number" class="form-control" id="stock" name="stock" step="1" required>
+        </div>
+
+
+
 
         <button type="submit" class="btn btn-primary">Créer</button>
     </form>

@@ -122,7 +122,8 @@ final class AdminProduitController extends AbstractController
         }
 
         // Redirection vers la page d’administration des produits après la modification
-        return $this->redirectToRoute('app_admin_produit');
+      return new Response('<script>window.location.href="' . $this->generateUrl('app_admin_produit') . '";</script>');
+
     }
 
     /**
@@ -143,7 +144,8 @@ final class AdminProduitController extends AbstractController
             $request->request->get('nom') &&           // get('nom') lit la valeur du champ <input name="nom">
             $request->request->get('description') &&
             $request->request->get('prix') &&
-            $request->request->get('category')
+            $request->request->get('category') &&
+            $request->request->get('stock')
         ) {
             // On crée un nouveau produit vide
             $produit = new Produit();
@@ -153,6 +155,7 @@ final class AdminProduitController extends AbstractController
             $produit->setNom($request->request->get('nom')); // Exemple : <input name="nom" value="Chaise">
             $produit->setDescription($request->request->get('description'));
             $produit->setPrix((float)$request->request->get('prix')); // On convertit en float pour éviter une erreur
+            $produit->setStock((int)$request->request->get('stock'));
             /** @var UploadedFile|null $imageFile */
             $imageFile = $request->files->get('img');
             if ($imageFile) {
@@ -203,7 +206,32 @@ final class AdminProduitController extends AbstractController
             'categories' => $categories,
         ]);
     }
+
+
+    #[Route('/admin/produit/delete/{id}', name: 'produit_delete', methods: ['POST'])]
+public function delete(Produit $produit, EntityManagerInterface $em): Response
+{
+    // Supprime l'image associée si elle existe
+    $image = $produit->getImg();
+    if ($image) {
+        $imagePath = $this->getParameter('images_directory') . '/' . $image;
+        if (file_exists($imagePath)) {
+            unlink($imagePath); // Supprime le fichier du disque
+        }
+    }
+
+    // Supprime le produit de la base de données
+    $em->remove($produit);
+    $em->flush();
+
+    $this->addFlash('success', 'Produit supprimé avec succès.');
+
+    return $this->redirectToRoute('app_admin_produit');
 }
+
+}
+
+
 
 
 // 💬 Comment expliquer ça à des apprenants débutants

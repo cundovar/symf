@@ -1,159 +1,199 @@
 {% extends 'base.html.twig' %}
-
-{% block body %}
-    <a href="{{ path('produit_new_manual') }}">Ajouter un produit</a>
-
-    <h2>Liste des produits</h2>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Prix</th>
-                <th>Actions</th>
-                <th>Image</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for produit in produits %}
-                <tr>
-                    <td>{{ produit.nom }}</td>
-                    <td>{{ produit.prix }} €</td>
-                    <td>
-                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#showModal{{ produit.id }}">
-                            Afficher
-                        </button>
-                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ produit.id }}">
-                            Modifier
-                        </button>
-                    </td>
-                    <td>
-                        {% if produit.img %}
-                            <img src="{{ asset('images/' ~ produit.img) }}" alt="Image de {{ produit.nom }}" width="80">
-                        {% else %}
-                            <em>Aucune image</em>
-                        {% endif %}
-                    </td>
-                </tr>
-
-                {# MODALE AFFICHAGE #}
-                <div class="modal fade" id="showModal{{ produit.id }}" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Détails du produit</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p><strong>Nom :</strong> {{ produit.nom }}</p>
-                                <p><strong>Prix :</strong> {{ produit.prix }} €</p>
-                                <p><strong>Description :</strong> {{ produit.description }}</p>
-                                <p><strong>Catégorie :</strong> {{ produit.category.name }}</p>
-                                {% if produit.img %}
-                                    <p><strong>Image :</strong><br>
-                                        <img src="{{ asset('images/' ~ produit.img) }}" alt="Image de {{ produit.nom }}" width="200">
-                                    </p>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {# MODALE EDITION #}
-                <div class="modal fade" id="editModal{{ produit.id }}" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-
-                            {{ form_start(formEdit[produit.id], {
-                                'action': path('produit_update', {id: produit.id}),
-                                'method': 'POST',
-                                'attr': {'enctype': 'multipart/form-data'}
-                            }) }}
-
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Modifier {{ produit.nom }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        {{ form_label(formEdit[produit.id].nom) }}
-                                        {{ form_widget(formEdit[produit.id].nom, {'attr': {'class': 'form-control'}}) }}
-                                    </div>
-
-                                    <div class="mb-3">
-                                        {{ form_label(formEdit[produit.id].prix) }}
-                                        {{ form_widget(formEdit[produit.id].prix, {'attr': {'class': 'form-control'}}) }}
-                                    </div>
-
-                                    <div class="mb-3">
-                                        {{ form_label(formEdit[produit.id].description) }}
-                                        {{ form_widget(formEdit[produit.id].description, {'attr': {'class': 'form-control'}}) }}
-                                    </div>
-
-                                    <div class="mb-3">
-                                        {{ form_label(formEdit[produit.id].category) }}
-                                        {{ form_widget(formEdit[produit.id].category, {'attr': {'class': 'form-select'}}) }}
-                                    </div>
-
-                                    {% if produit.img %}
-                                        <div class="mb-3 text-center">
-                                            <p><strong>Image actuelle :</strong></p>
-                                            <img src="{{ asset('images/' ~ produit.img) }}" alt="Image actuelle" width="150">
-                                        </div>
-                                    {% else %}
-                                        <p><em>Aucune image enregistrée</em></p>
-                                    {% endif %}
-
-                                    <div class="mb-3">
-                                        {{ form_label(formEdit[produit.id].img, "Changer l'image") }}
-                                        {{ form_widget(formEdit[produit.id].img, {
-                                            'attr': {
-                                                'class': 'form-control',
-                                                'accept': 'image/*',
-                                                'onchange': 'previewImage(this, "preview-new-' ~ produit.id ~ '")'
-                                            }
-                                        }) }}
-                                        <img id="preview-new-{{ produit.id }}" style="display:none;" width="150">
-                                    </div>
-                                </div>
-
-                                <div class="modal-footer">
-                              
-                                
-                                    <button type="submit" class="btn btn-success ">Enregistrer</button>
-                                
-                             
-                                </div>
-
-                            {{ form_end(formEdit[produit.id]) }}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </tbody>
-    </table>
-
- 
-
-
-
-
-   
+{% block turboDead %}
+	<meta name="turbo-visit-control" content="reload">
 {% endblock %}
-{% block js %}
-    <script>
-        function previewImage(input, previewId) {
-            const preview = document.getElementById(previewId);
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    </script>
 
+{% block stylesheets  %}
+
+	{{parent()}}
+
+	<link rel="stylesheet" href='{{ asset("styles/admin_product_index.css") }}'>
+
+{% endblock %}
+{% block body %}
+
+
+	{% for type, messages in app.flashes %}
+		{% for message in messages %}
+			<div class="alert alert-{{ type }} alert-dismissible flash-message fade show" role="alert">
+				{{ message }}
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		{% endfor %}
+	{% endfor %}
+	<button class="btn btn-success float-end">
+		<a href="{{ path('produit_new_manual') }}">Ajouter un produit</a>
+
+	</button>
+
+	<h2 class="mt-10 text-2xl">Liste des produits</h2>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Prix</th>
+				<th>Actions</th>
+				<th>Image</th>
+				<th>Stock</th>
+				<th>Suprimer</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			{% for produit in produits %}
+				<tr>
+					<td>{{ produit.nom }}</td>
+					<td>{{ produit.prix }}
+						€</td>
+					<td>
+						<button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#showModal{{ produit.id }}">
+							Afficher
+						</button>
+						<button class="btn btn-warning" onclick="openCustomModal({{ produit.id }})">
+							Modifier
+						</button>
+					</td>
+					<td>
+						{% if produit.img %}
+							<img src="{{ asset('images/product_image/' ~ produit.img) }}" alt="Image de {{ produit.nom }}" width="80">
+						{% else %}
+							<em>Aucune image</em>
+						{% endif %}
+					</td>
+					<td>{{ produit.stock }}
+					</td>
+					<td>
+						<form method="POST" action="{{ path('produit_delete', {id: produit.id}) }}" onsubmit="return confirm('Confirmer la suppression ?');" style="display:inline;">
+							<button class="btn btn-danger btn-sm">Supprimer</button>
+						</form>
+
+					</td>
+				</tr>
+
+				{# MODALE AFFICHAGE 100% Bootstrap #}
+				<div class="modal fade" id="showModal{{ produit.id }}" tabindex="-1" aria-labelledby="showModalLabel{{ produit.id }}" aria-hidden="true">
+
+					<div class="modal-dialog">
+						<div class="modal-content">
+
+							<div class="modal-header">
+								<h5 class="modal-title" id="showModalLabel{{ produit.id }}">
+									Détails du produit
+								</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+							</div>
+
+							<div class="modal-body">
+								<p>
+									<strong>Nom :</strong>
+									{{ produit.nom }}</p>
+								<p>
+									<strong>Prix :</strong>
+									{{ produit.prix }}
+									€</p>
+								<p>
+									<strong>Description :</strong>
+									{{ produit.description }}</p>
+								<p>
+									<strong>Catégorie :</strong>
+									{{ produit.category.name }}</p>
+								<p>
+									<strong>stock :</strong>
+									{{ produit.stock}}</p>
+
+								{% if produit.img %}
+									<p>
+										<strong>Image :</strong><br>
+										<img src="{{ asset('images/product_image/' ~ produit.img) }}" alt="Image de {{ produit.nom }}" width="200">
+									</p>
+								{% endif %}
+							</div>
+
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+									Fermer
+								</button>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+
+				{# MODALE EDITION CSS/JS #}
+				<div id="customEditModal{{ produit.id }}" class="custom-modal">
+					<div class="custom-modal-content">
+
+						<span class="custom-modal-close" onclick="closeCustomModal({{ produit.id }})">&times;</span>
+						<h5>Modifier
+							{{ produit.nom }}</h5>
+
+						{{ form_start(formEdit[produit.id], {
+            'action': path('produit_update', {id: produit.id}),
+            'method': 'POST',
+            'attr': {'enctype': 'multipart/form-data',
+            'data-turbo': 'false' }
+        }) }}
+
+						<div class="mb-3">
+							{{ form_label(formEdit[produit.id].nom) }}
+							{{ form_widget(formEdit[produit.id].nom, {'attr': {'class': 'form-control'}}) }}
+						</div>
+
+						<div class="mb-3">
+							{{ form_label(formEdit[produit.id].prix) }}
+							{{ form_widget(formEdit[produit.id].prix, {'attr': {'class': 'form-control'}}) }}
+						</div>
+
+						<div class="mb-3">
+							{{ form_label(formEdit[produit.id].description) }}
+							{{ form_widget(formEdit[produit.id].description, {'attr': {'class': 'form-control'}}) }}
+						</div>
+
+						<div class="mb-3">
+							{{ form_label(formEdit[produit.id].category) }}
+							{{ form_widget(formEdit[produit.id].category, {'attr': {'class': 'form-select'}}) }}
+						</div>
+
+						{% if produit.img %}
+							<div class="mb-3 text-center">
+								<p>
+									<strong>Image actuelle :</strong>
+								</p>
+								<img src="{{ asset('images/product_image/' ~ produit.img) }}" alt="Image actuelle" width="150">
+							</div>
+						{% endif %}
+
+						<div class="mb-3">
+							{{ form_label(formEdit[produit.id].img, "Changer l'image") }}
+							{{ form_widget(formEdit[produit.id].img, {
+                'attr': {
+                    'class': 'form-control',
+                    'accept': 'image/*',
+                    'onchange': 'previewImage(this, "preview-new-' ~ produit.id ~ '")'
+                }
+            }) }}
+							<img id="preview-new-{{ produit.id }}" style="display:none;" width="150">
+						</div>
+
+
+						<div class="text-end">
+							<button type="submit" class="btn btn-success">Enregistrer</button>
+						</div>
+
+						{{ form_end(formEdit[produit.id]) }}
+					</div>
+				</div>
+
+			{% endfor %}
+		</tbody>
+	</table>
+
+
+{% endblock %}
+
+
+{% block js %}
+	<script src=" {{ asset('script/productCrud.js') }} "></script>
 {% endblock %}

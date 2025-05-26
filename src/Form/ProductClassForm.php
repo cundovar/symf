@@ -33,6 +33,7 @@ class ProductClassForm extends AbstractType
             // === Champs simples : Symfony choisit le bon type automatiquement ===
             ->add('nom')         // Champ texte (input type="text")
             ->add('description') // Champ textarea (zone de texte)
+            ->add('stock')       // Champ nombre (input type="number")
            ->add('img', FileType::class, [
     'label' => "Image (fichier)",
     'required' => false,

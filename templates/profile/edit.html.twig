@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Mon profil</h2>
+
+
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+    <div class="mb-3">
+        {{ form_label(form.username) }}
+        {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.email) }}
+        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.adresse) }}
+        {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.telephone) }}
+        {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.plainPassword) }}
+        {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.image) }}
+        {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    {% if app.user.image %}
+        <div class="mb-3">
+            <strong>Image actuelle :</strong><br>
+            <img src="{{ asset('images/profil_image/'~ app.user.image) }}" width="150">
+        </div>
+    {% endif %}
+
+    <button class="btn btn-primary">Mettre à jour</button>
+
+    {{ form_end(form) }}
+{% endblock %}

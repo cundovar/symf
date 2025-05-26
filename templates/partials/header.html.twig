@@ -13,22 +13,9 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
 
-    <a href="{{ path('panier_index') }}">
-        🛒 Panier
-
-        {% if app.user and app.user.getNombreArticlesPanier() > 0 %}
-            <span class="badge bg-warning text-dark">
-                {{ app.user.getNombreArticlesPanier() }}
-            </span>
-        {% else %}
-          
-            <span class="badge bg-warning text-dark">
-                0
-            </span>
-    </a>
-{% endif %}
+  
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Mon site</a>
+    <a class="navbar-brand" href=" {{ path('home') }} ">Mon site</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -40,6 +27,14 @@
         <li class="nav-item">
           <a class="nav-link" href=" {{ path('apropos') }}  ">a propos</a>
         </li>
+        {% if app.user %}
+        
+        
+        <li class="nav-item">
+          <a class="nav-link" href=" {{ path('profile') }}  ">profile</a>
+        </li>
+        
+        {% endif %}
         <li class="nav-item">
 
 
@@ -74,8 +69,26 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form> #}
         
-        
-        
+            <a href="{{ path('changer_theme') }}" class="btnTheme float-end">
+            Changer de thème (actuel : {{ theme }})
+        </a>
+
+
+          <a class=" float-end" href="{{ path('panier_index') }}">
+        🛒 Panier
+
+        {% if app.user and app.user.getNombreArticlesPanier() > 0 %}
+            <span class="badge bg-warning text-dark">
+                {{ app.user.getNombreArticlesPanier() }}
+            </span>
+        {% else %}
+          
+            <span class="badge bg-warning text-dark">
+                0
+            </span>
+            {% endif %}
+
+    </a>
         
         
         {% endif %}

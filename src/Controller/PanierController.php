@@ -9,38 +9,46 @@ use App\Entity\Produit;
 use App\Repository\PanierRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class PanierController extends AbstractController
 {
-     #[Route('/', name: 'panier_index')]
+     #[Route('/panier', name: 'panier_index')]
     public function index(PanierRepository $repo): \Symfony\Component\HttpFoundation\Response
     {
         $panier = $repo->findBy(['user' => $this->getUser()]);
         return $this->render('panier/index.html.twig', ['lignes' => $panier]);
     }
 
-        #[Route('/ajouter/{id}', name: 'panier_ajouter')]
-    public function ajouter(Produit $produit, EntityManagerInterface $em, PanierRepository $repo): \Symfony\Component\HttpFoundation\RedirectResponse
-    {
-        $user = $this->getUser();
-        $ligne = $repo->findOneBy(['user' => $user, 'produit' => $produit]);
+#[Route('/panier/ajouter/{id}', name: 'panier_ajouter')]
+public function ajouter(
+    Produit $produit,
+    Request $request,
+    EntityManagerInterface $em,
+    PanierRepository $repo
+): Response {
+    $user = $this->getUser();
+    $quantite = max(1, (int) $request->query->get('quantite', 1));
 
-        if ($ligne) {
-            $ligne->setQuantite($ligne->getQuantite() + 1);
-        } else {
-            $ligne = new Panier();
-            $ligne->setUser($user);
-            $ligne->setProduit($produit);
-            $ligne->setQuantite(1);
-            $em->persist($ligne);
-        }
+    $ligne = $repo->findOneBy(['user' => $user, 'produit' => $produit]);
 
-        $em->flush();
-
-        return $this->redirectToRoute('panier_index');
+    if ($ligne) {
+        $ligne->setQuantite($ligne->getQuantite() + $quantite);
+    } else {
+        $ligne = new Panier();
+        $ligne->setUser($user)
+              ->setProduit($produit)
+              ->setQuantite($quantite);
+        $em->persist($ligne);
     }
+
+    $em->flush();
+
+  $this->addFlash('success', 'sup');
+       return $this->redirect($request->headers->get('referer') );
+}
 
     #[Route('/retirer/{id}', name: 'panier_retirer')]
     public function retirer(Panier $ligne, EntityManagerInterface $em): \Symfony\Component\HttpFoundation\RedirectResponse
@@ -64,7 +72,7 @@ final class PanierController extends AbstractController
     }
 
 
-   #[Route('/panier/valider', name: 'panier_valider')]
+ #[Route('/panier/valider', name: 'panier_valider')]
 public function validerPanier(
     EntityManagerInterface $em,
     PanierRepository $panierRepo
@@ -77,19 +85,29 @@ public function validerPanier(
         return $this->redirectToRoute('panier_index');
     }
 
-    // 1. Créer la commande
     $commande = new Commande();
     $commande->setUser($user);
     $commande->setCreatedAt(new \DateTimeImmutable());
     $commande->setStatut('en attente');
 
-    // 2. Ajouter chaque ligne du panier comme LigneCommande
     foreach ($panierLignes as $lignePanier) {
+        $produit = $lignePanier->getProduit();
+        $quantite = $lignePanier->getQuantite();
+
+        // Vérification finale de stock (sécurité backend)
+        if ($quantite > $produit->getStock()) {
+            $this->addFlash('error', 'Le stock du produit "' . $produit->getNom() . '" est insuffisant.');
+            return $this->redirectToRoute('panier_index');
+        }
+
+        // Mise à jour du stock produit
+        $produit->setStock($produit->getStock() - $quantite);
+
         $ligneCommande = new LigneCommande();
         $ligneCommande->setCommande($commande);
-        $ligneCommande->setProduit($lignePanier->getProduit());
-        $ligneCommande->setQuantite($lignePanier->getQuantite());
-        $ligneCommande->setPrix($lignePanier->getProduit()->getPrix());
+        $ligneCommande->setProduit($produit);
+        $ligneCommande->setQuantite($quantite);
+        $ligneCommande->setPrix($produit->getPrix());
 
         $em->persist($ligneCommande);
         $em->remove($lignePanier); // vider le panier
@@ -101,6 +119,15 @@ public function validerPanier(
     $this->addFlash('success', 'Commande validée avec succès !');
     return $this->redirectToRoute('commande_index');
 }
+#[Route('/panier/modifier/{id}', name: 'panier_modifier_quantite', methods: ['POST'])]
+public function modifierQuantite(Panier $ligne, Request $request, EntityManagerInterface $em): Response
+{
+    $quantite = max(1, (int) $request->request->get('quantite'));
+    $ligne->setQuantite($quantite);
+    $em->flush();
 
+    $this->addFlash('success', 'Quantité mise à jour.');
+    return $this->redirectToRoute('panier_index');
+}
  
 }

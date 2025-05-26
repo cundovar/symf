@@ -3,6 +3,10 @@
 {% block title %}Hello PanierController!{% endblock %}
 
 {% block body %}
+   {% if lignes is empty %}
+        <p>Panier vide .</p>
+    {% else %}
+
 {% for ligne in lignes %}
     <p>
         {{ ligne.produit.nom }} - 
@@ -10,5 +14,29 @@
         {{ ligne.quantite * ligne.produit.prix|number_format(2) }} €
         <a href="{{ path('panier_retirer', {id: ligne.id}) }}">Retirer</a>
     </p>
+    <form method="post" action="{{ path('panier_modifier_quantite', { id: ligne.id }) }}">
+    <input type="number" name="quantite" value="{{ ligne.quantite }}" min="1" max="{{ ligne.produit.stock }}" class="form-control d-inline w-25">
+    <button type="submit" class="btn btn-primary btn-sm">Modifier</button>
+</form>
+<form action="{{ path('panier_retirer', {id: ligne.id}) }}" method="post" class="d-inline">
+    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Supprimer ce produit du panier ?')">
+        🗑️ Supprimer
+    </button>
+</form>
+{% if app.user %}
+
+{% if lignes|length > 0 %}
+    <a href="{{ path('panier_valider') }}" class="btn btn-success mt-4">
+        🧾 Commander
+    </a>
+{% endif %}
+
+{% else %}
+    <p> connectez-vous pour commander</p>
+
+{% endif %}
+
+
 {% endfor %}
+{% endif %}
 {% endblock %}

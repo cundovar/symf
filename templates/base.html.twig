@@ -2,32 +2,40 @@
 
 <html>
 	<head>
-		<meta charset="UTF-8">
+		<meta charset="UTF-8"> {% block turboDead %}{% endblock %}
 
-    {% block metaDescription %}
-	
-	<meta name="description" content="page base">
-	{% endblock %}
+		{% block metaDescription %}
+
+			<meta name="description" content="page base">
+		{% endblock %}
 
 		<title>
-			{% block title %}
-			{% endblock %}
+			{% block title %}{% endblock %}
 		</title>
 		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
 		{% block stylesheets %}
 			<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-			<link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+			<link rel="stylesheet" href="{{ asset('/styles/app.css') }}">
+			<link rel="stylesheet" href="/public/styles/app.css">
+
 		{% endblock %}
 
 		{% block javascripts %}
 			{% block importmap %}
 				{{ importmap('app') }}
 			{% endblock %}
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+			<script type="module">
+				import {start} from '@hotwired/turbo';
+Turbo.session.drive = false;
+			</script>
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 		{% endblock %}
 	</head>
 
-	<body>
+	{# Appliquer la classe body selon le cookie #}
+	{% set theme = app.request.cookies.get('theme_preference') ?? 'light' %}
+	<body class="{{ theme }}">
 		{% block Header %}
 
 
@@ -36,12 +44,25 @@
 		{% endblock %}
 
 
-        <div class="container border border-lime-600">
-		{% block body %}{% endblock %}
+		<div class="container border border-lime-600"> {% block body %}{% endblock %}
 
-		
-        
-        </div>
 
-	</body>
-</html>
+			</div>
+
+			{% block js %}
+
+				<script>
+					document.addEventListener('DOMContentLoaded', () => {
+setTimeout(() => {
+document.querySelectorAll('.flash-message').forEach(el => {
+el.classList.remove('show');
+el.classList.add('fade');
+setTimeout(() => el.remove(), 300); // suppression DOM
+});
+}, 3000); // 3 secondes
+});
+				</script>
+
+			{% endblock %}
+		</body>
+	</html>

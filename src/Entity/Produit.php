@@ -1,51 +1,54 @@
 <?php
-// un namespace permet de classer logiquement les classes de la même application
+
 namespace App\Entity;
 
-// on importe la class repository associée à notre entité Produit
 use App\Repository\ProduitRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
-// on importe les annotations Doctrine
 use Doctrine\ORM\Mapping as ORM;
 
-
-// on  indique que cette class est une entité Doctrine et qu'elle est liee au repository ProduitRepository
+// Cette classe est une entité Doctrine et est liée à la table produit.
+// Elle utilise le repository ProduitRepository pour accéder aux données.
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
 {
-    #[ORM\Id]  // clé primaire de l'entité
-    #[ORM\GeneratedValue] // auto-increment
-    #[ORM\Column]// la colonne de l'entité
-    private ?int $id = null; // propriété privé de la class avec typage int et valeur par defaut null 
+    // Clé primaire auto-incrémentée
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    #[ORM\Column(length: 255)] // colonne name de type string de longueur 255
+    // Champ nom de type string (VARCHAR 255)
+    #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\ManyToOne(inversedBy: 'user')]
+    // Relation ManyToOne (chaque produit appartient à une seule catégorie)
+    // 'inversedBy' indique la propriété dans Category qui contient la collection de produits
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'produits')]
     private ?Category $category = null;
 
+    // Description du produit
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
+    // Nom du fichier image (stocké sous forme de texte)
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $img = null;
 
+    // Prix du produit
     #[ORM\Column]
     private ?float $prix = null;
 
-    /**
-     * @var Collection<int, Panier>
-     */
+    // Relation OneToMany avec Panier : un produit peut être dans plusieurs paniers
     #[ORM\OneToMany(targetEntity: Panier::class, mappedBy: 'produit')]
     private Collection $paniers;
 
-    /**
-     * @var Collection<int, LigneCommande>
-     */
-    #[ORM\OneToMany(targetEntity: LigneCommande::class, mappedBy: 'produit')]
+    // Relation OneToMany avec LigneCommande : un produit peut apparaître dans plusieurs lignes de commande
+    #[ORM\OneToMany(targetEntity: LigneCommande::class, mappedBy: 'produit', orphanRemoval: true, cascade: ['remove'])]
     private Collection $ligneCommandes;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $stock = null;
 
     public function __construct()
     {
@@ -53,8 +56,7 @@ class Produit
         $this->ligneCommandes = new ArrayCollection();
     }
 
-    // getter et setter
-
+    // Getters & setters
     public function getId(): ?int
     {
         return $this->id;
@@ -68,7 +70,6 @@ class Produit
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -80,7 +81,6 @@ class Produit
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
-
         return $this;
     }
 
@@ -92,7 +92,6 @@ class Produit
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -104,7 +103,6 @@ class Produit
     public function setImg(?string $img): static
     {
         $this->img = $img;
-
         return $this;
     }
 
@@ -116,7 +114,6 @@ class Produit
     public function setPrix(float $prix): static
     {
         $this->prix = $prix;
-
         return $this;
     }
 
@@ -141,7 +138,6 @@ class Produit
     public function removePanier(Panier $panier): static
     {
         if ($this->paniers->removeElement($panier)) {
-            // set the owning side to null (unless already changed)
             if ($panier->getProduit() === $this) {
                 $panier->setProduit(null);
             }
@@ -171,11 +167,22 @@ class Produit
     public function removeLigneCommande(LigneCommande $ligneCommande): static
     {
         if ($this->ligneCommandes->removeElement($ligneCommande)) {
-            // set the owning side to null (unless already changed)
             if ($ligneCommande->getProduit() === $this) {
                 $ligneCommande->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStock(): ?int
+    {
+        return $this->stock;
+    }
+
+    public function setStock(?int $stock): static
+    {
+        $this->stock = $stock;
 
         return $this;
     }

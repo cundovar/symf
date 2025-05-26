@@ -1,7 +1,7 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 * {
     margin: 0;
     padding: 0;
@@ -15,4 +15,26 @@
 
 .f-red {
     color: red;
+}
+
+
+
+body.light {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+body.dark {
+    background-color: #eca0a0 !important;
+    color: #4cafd6 !important;
+}
+
+.btnTheme {
+    display: inline-block;
+    margin: 1em;
+    padding: 0.5em 1em;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
 }
