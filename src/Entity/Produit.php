@@ -4,6 +4,8 @@ namespace App\Entity;
 
 // on importe la class repository associée à notre entité Produit
 use App\Repository\ProduitRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 // on importe les annotations Doctrine
 use Doctrine\ORM\Mapping as ORM;
@@ -23,6 +25,33 @@ class Produit
 
     #[ORM\ManyToOne(inversedBy: 'user')]
     private ?Category $category = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $img = null;
+
+    #[ORM\Column]
+    private ?float $prix = null;
+
+    /**
+     * @var Collection<int, Panier>
+     */
+    #[ORM\OneToMany(targetEntity: Panier::class, mappedBy: 'produit')]
+    private Collection $paniers;
+
+    /**
+     * @var Collection<int, LigneCommande>
+     */
+    #[ORM\OneToMany(targetEntity: LigneCommande::class, mappedBy: 'produit')]
+    private Collection $ligneCommandes;
+
+    public function __construct()
+    {
+        $this->paniers = new ArrayCollection();
+        $this->ligneCommandes = new ArrayCollection();
+    }
 
     // getter et setter
 
@@ -51,6 +80,102 @@ class Produit
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getImg(): ?string
+    {
+        return $this->img;
+    }
+
+    public function setImg(?string $img): static
+    {
+        $this->img = $img;
+
+        return $this;
+    }
+
+    public function getPrix(): ?float
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(float $prix): static
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Panier>
+     */
+    public function getPaniers(): Collection
+    {
+        return $this->paniers;
+    }
+
+    public function addPanier(Panier $panier): static
+    {
+        if (!$this->paniers->contains($panier)) {
+            $this->paniers->add($panier);
+            $panier->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removePanier(Panier $panier): static
+    {
+        if ($this->paniers->removeElement($panier)) {
+            // set the owning side to null (unless already changed)
+            if ($panier->getProduit() === $this) {
+                $panier->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LigneCommande>
+     */
+    public function getLigneCommandes(): Collection
+    {
+        return $this->ligneCommandes;
+    }
+
+    public function addLigneCommande(LigneCommande $ligneCommande): static
+    {
+        if (!$this->ligneCommandes->contains($ligneCommande)) {
+            $this->ligneCommandes->add($ligneCommande);
+            $ligneCommande->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLigneCommande(LigneCommande $ligneCommande): static
+    {
+        if ($this->ligneCommandes->removeElement($ligneCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($ligneCommande->getProduit() === $this) {
+                $ligneCommande->setProduit(null);
+            }
+        }
 
         return $this;
     }

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout manuel produit{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Ajouter un produit (manuellement)</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+h
+    <form method="POST">
+        <div class="mb-3">
+            <label for="nom" class="form-label">Nom</label>
+            <input type="text" class="form-control" id="nom" name="nom" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <input type="text" class="form-control" id="description" name="description" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="prix" class="form-label">Prix (€)</label>
+            <input type="number" class="form-control" id="prix" name="prix" step="0.01" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="img" class="form-label">Image (URL)</label>
+            <input type="text" class="form-control" id="img" name="img">
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">Catégorie</label>
+            <select class="form-control" id="category" name="category" required>
+                <option value="">-- Choisir une catégorie --</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Créer</button>
+    </form>
+</div>
+{% endblock %}

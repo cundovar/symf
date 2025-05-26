@@ -1,0 +1,72 @@
+{# Exemple pédagogique : comprendre le fonctionnement des formulaires Symfony dans Twig
+{% extends 'base.html.twig' %}
+
+{% block title %}Exemple de Formulaire Symfony{% endblock %}
+
+{% block body %}
+    <h1>Exemple de Formulaire Symfony : usage des fonctions Twig</h1>
+
+    {# Démarre le formulaire Symfony (génère <form ...>) #}
+    {{ form_start(form, {
+        'attr': {'class': 'border p-4 bg-light'}
+    }) }}
+
+    <h2>1. Exemple avec {{ 'form_row' }}</h2>
+    <p>
+        <code>form_row</code> affiche le label, le champ, et les erreurs.
+    </p>
+    <div class="mb-3">
+        {{ form_row(form.nom) }}
+    </div>
+
+    <hr>
+
+    <h2>2. Exemple avec {{ 'form_label' }} + {{ 'form_widget' }}</h2>
+    <p>
+        Cette méthode donne plus de contrôle : tu peux ajouter des classes, etc.
+    </p>
+    <div class="mb-3">
+        {{ form_label(form.prix, 'Prix du produit') }}
+        {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'ex: 9.99'}}) }}
+    </div>
+
+    <hr>
+
+    <h2>3. Affichage manuel de chaque partie</h2>
+    <p>
+        Tu peux aussi afficher les erreurs séparément.
+    </p>
+    <div class="mb-3">
+        {{ form_label(form.description) }}
+        {{ form_errors(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <hr>
+
+    <h2>4. Menu déroulant avec class Bootstrap</h2>
+    <div class="mb-3">
+        {{ form_label(form.category) }}
+        {{ form_widget(form.category, {'attr': {'class': 'form-select'}}) }}
+    </div>
+
+    <hr>
+
+    {# Bouton d'envoi du formulaire #}
+    <button type="submit" class="btn btn-success">Envoyer</button>
+
+    {# Termine le formulaire (ferme </form>) #}
+    {{ form_end(form) }}
+
+    <hr>
+
+    <h3>Résumé pédagogique :</h3>
+    <ul>
+        <li><code>form.nom</code> → objet champ complet</li>
+        <li><code>form_widget(form.nom)</code> → génère le champ HTML (<input>, <textarea>...)</li>
+        <li><code>form_label(form.nom)</code> → affiche le label HTML</li>
+        <li><code>form_row(form.nom)</code> → tout-en-un : label + champ + erreurs</li>
+        <li><code>form_start</code> / <code>form_end</code> → délimite le formulaire</li>
+    </ul>
+
+{% endblock %} #}
