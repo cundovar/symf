@@ -29,3 +29,5 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    console.log('productCrud')

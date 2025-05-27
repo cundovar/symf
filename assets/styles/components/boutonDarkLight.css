@@ -1,0 +1,26 @@
+.btnTheme{
+
+    background-color: #95d4ec;
+    border-radius: 20px;
+    margin: 5px;
+    cursor: pointer;
+    color: rgb(58, 24, 182);
+    padding: 15px;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    
+}
+
+.btnTheme:focus{
+    background-color: #427185;
+    color: yellow;
+ 
+}
+
+.btnThemehovered{
+    background-color: #f0f4f7;
+    color: red;
+}

@@ -1,25 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{# ✅ Ce bloc surcharge celui de base.html.twig pour ajouter ton propre CSS #}
+{% block metaDescription %}
+
+	<meta name="description" content="page home">
+{% endblock %}
+
 {% block stylesheets %}
 	{# ← Important pour ne pas supprimer les styles existants #}
 	{{ parent() }}
 
 	{# Ici, {{ parent() }} insère le contenu du bloc du base.html.twig, puis tu ajoutes ta propre feuille de style. #}
-	<link
-	rel="stylesheet" href="{{ asset('styles/home.css') }}">
+	<link rel="stylesheet" href="{{ asset('styles/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/vendor/splide.min.css') }}">
 {# <link rel="stylesheet" href="assets/styles/home.css">/ #}
 {% endblock %}
 
 {# {{ asset('...') }} est une fonction Twig très utilisée dans Symfony. Elle sert à générer le chemin complet vers un fichier situé dans le dossier public/, qui est la racine "visible" de ton site web. #}
-
-
-{% block javascripts %}
-	{{parent()}}
-	<script src=" {{ asset('script/home.js') }} "></script>
-
-{% endblock %}
-
 
 {% block title %}
 	home
@@ -33,6 +29,33 @@
 
 <P>TU ES ADMIN </P>
 {% endif %}
+
+
+<div id="produit-carousel" data-controller="@splidejs/splide" class="splide mb-10">
+  <div class="splide__track">
+    <ul class="splide__list">
+      {% for produit in produits %}
+        <li class="splide__slide text-center">
+          {% if produit.img %}
+            <img src="{{ asset('images/product_image/' ~ produit.img) }}" alt="{{ produit.nom }}" class="w-64 h-48 object-cover mx-auto">
+          {% else %}
+            <img src="{{ asset('images/default_image.jpg') }}" alt="Aucune image" class="w-64 h-48 object-cover mx-auto">
+          {% endif %}
+
+          <div class="mt-2">
+            <h5>{{ produit.nom }}</h5>
+            <p>{{ produit.prix }} €</p>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+
+
+
+
 
 	{% if app.user %}
 
@@ -67,7 +90,7 @@
 
     {% for produit in produits %}
 
-	<div class=" border w-64 p-10 justify-center items-center bg-orange-200 m-10 ">
+	<div class="border w-64 p-10 justify-center items-center bg-orange-200 m-10 ">
 
 	{% if produit.img %}
 	
@@ -113,10 +136,10 @@
 
 {% endblock %}
 
+{% block js %}
 
-{% block metaDescription %}
+<script defer  type="module"  src=" {{ asset('script/home.js') }}" ></script>
 
-	{{parent()}}
-
-	<meta name="description" content="page home">
 {% endblock %}
+
+
