@@ -1,236 +1,271 @@
 <?php
 
-// Le namespace est comme un dossier virtuel pour organiser ton code PHP
 namespace App\Controller;
 
-// On "importe" les classes nécessaires à ce fichier
-use App\Entity\Produit; // Représente un produit en base de données
-use App\Form\ProductClassForm; // Le formulaire Symfony pour Produit
-
-// Les "Repository" permettent d'accéder aux données depuis la base
+use App\Entity\Produit;
+use App\Form\ProductClassForm;
 use App\Repository\CategoryRepository;
 use App\Repository\ProduitRepository;
-
-// EntityManagerInterface = outil principal de Doctrine pour gérer la base (ajouter, modifier, supprimer)
 use Doctrine\ORM\EntityManagerInterface;
-
-// Classe Symfony de base pour créer un contrôleur
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-// Request contient toutes les infos de la requête HTTP (formulaire soumis, méthode GET ou POST, URL, etc.)
 use Symfony\Component\HttpFoundation\Request;
-
-// Response est ce qu’on retourne au navigateur : une page HTML, une redirection, etc.
 use Symfony\Component\HttpFoundation\Response;
-
-// Permet de définir les routes avec des attributs PHP 8+ (nouveau système depuis Symfony 6)
 use Symfony\Component\Routing\Attribute\Route;
 
-// On déclare une classe "contrôleur", qui est le coeur d'une page en Symfony
-// "final" = personne ne pourra hériter de cette classe plus tard
+// EntityManagerInterface	     Gère les opérations de persistance (sauvegarde, mise à jour, suppression, transaction)
+// Repository	                 Gère les opérations de lecture/recherche (find, findBy, findOneBy, etc.)
+
 final class AdminProduitController extends AbstractController
 {
     /**
-     * Cette méthode affiche la page d'administration des produits
-     * Elle affiche tous les produits et prépare un formulaire d'édition vide (ex : dans une modale Bootstrap)
+     * Affiche tous les produits avec leurs formulaires d'édition respectifs.
      */
     #[Route('/admin/produit', name: 'app_admin_produit')]
     public function index(Request $request, ProduitRepository $repo, EntityManagerInterface $em): Response
+
+
     {
-        // $repo est automatiquement injecté par Symfony : c'est le service ProduitRepository
-        // On appelle la méthode findAll() avec -> (car $repo est un objet)
-        // Cela va chercher tous les produits enregistrés en base de données
+
+
+        // Récupère tous les produits en base
         $produits = $repo->findAll();
 
-        // On crée un nouvel objet Produit vide
-     
-
-        // On crée un formulaire Symfony basé sur la classe ProductClassForm
-        // Le 2e argument est l'objet lié : ici un produit vide
-        
-        // On prépare un tableau où chaque produit aura son propre formulaire
+        // Prépare un tableau pour stocker un formulaire par produit
         $formulaires = [];
 
-        // Pour chaque produit, on génère un formulaire lié à ce produit
         foreach ($produits as $produit) {
+            // Crée un formulaire d'édition pour chaque produit
             $formulaires[$produit->getId()] = $this->createForm(ProductClassForm::class, $produit)->createView();
         }
 
-        // On passe les produits et les formulaires à la vue Twig
+        // Rend la vue avec les produits et leurs formulaires
         return $this->render('admin_produit/index.html.twig', [
             'produits' => $produits,
-            'formEdit' => $formulaires, // tableau des formulaires par ID de produit
+            'formEdit' => $formulaires,
         ]);
-        // On retourne une réponse HTML en rendant un fichier Twig (vue)
-        // On envoie deux variables à Twig : 
-        // - les produits à afficher
-        // - le formulaire prêt à être affiché avec form_widget()
-    
     }
 
     /**
-     * Cette méthode modifie un produit existant via un formulaire POST
+     * Met à jour un produit existant via un formulaire POST.
+     */    /**
+     * Cette méthode permet de modifier un produit existant dans la base de données.
+     * Elle est appelée lorsqu’un formulaire est soumis en POST depuis la page d’admin.
+     * 
+     * @param Request $request → objet qui contient toutes les informations de la requête HTTP (données du formulaire, méthode utilisée, etc.)
+     * @param Produit $produit → objet automatiquement injecté par Symfony (grâce à l’ID passé dans l’URL)
+     * @param EntityManagerInterface $em → outil fourni par Doctrine pour modifier la base de données
+     * @return Response → retourne une réponse HTTP vers le navigateur
+     *  structure simplifier de $request 
+     * $request = new Request(
+     *$query = $_GET,
+     *$request = $_POST,
+     *$attributes = [],
+     *$cookies = $_COOKIE,
+     *$files = $_FILES,
+     *$server = $_SERVER
+     *;
+     * 
+     * 
      */
     #[Route('admin/produits/update/{id}', name: 'produit_update', methods: ['POST'])]
     public function update(Request $request, Produit $produit, EntityManagerInterface $em): Response
     {
-        // Symfony injecte automatiquement l'objet Produit correspondant à l'ID dans l'URL
-
-        // On crée un formulaire Symfony lié à l'objet Produit existant
+        // On utilise la méthode createForm() qui vient de la classe AbstractController (héritée par notre contrôleur)
+        // Elle sert à créer un objet Form Symfony basé sur une classe de formulaire (ici ProductClassForm)
+        // On lui passe 2 arguments : 
+        // - ProductClassForm::class → la classe PHP qui décrit le formulaire
+        // - $produit → l’objet Produit à modifier (lié au formulaire)
         $form = $this->createForm(ProductClassForm::class, $produit);
 
-        // On demande à Symfony de lire les données POST envoyées par le formulaire
-        // Il va automatiquement remplir l'objet Produit avec les nouvelles données
-        $form->handleRequest($request);
-          
+        // dd($form->createView());
 
- 
-        // Si le formulaire est bien soumis ET que les données sont valides
+        // $form est maintenant un objet de type FormInterface, il peut gérer des données entrantes
+
+        // handleRequest() signifie "traite la requête"
+        // Il vérifie si le formulaire a été soumis, et s’il y a des données POST dans $request
+        // Il va automatiquement remplir l’objet $produit avec les données du formulaire (nom, description, etc.)
+        // handleRequest($request)
+// Cette méthode prépare le formulaire en le liant à la requête HTTP (GET, POST, etc.)
+
+// Elle fait trois choses :
+
+// Elle regarde si la requête contient des données de formulaire (généralement en POST)
+
+// Si oui, elle remplit automatiquement l’objet lié au formulaire (Produit, User, etc.)
+
+// Elle marque le formulaire comme "soumis" en interne si des données ont été envoyées
+
+// Mais ! 👉 elle ne renvoie rien (pas de true ou false).
+
+
+        $form->handleRequest($request);
+
+        // On vérifie deux choses :
+        // 1. $form->isSubmitted() → le formulaire a été envoyé (via POST)
+        // 2. $form->isValid() → les données envoyées respectent les règles définies dans la classe ProductClassForm
+//         Cette méthode permet de vérifier après coup si handleRequest() a détecté une soumission.
+
+// Elle retourne :
+
+// true si le formulaire a été envoyé (ex : via POST avec les bons champs)
+
+// false sinon
+
+// Donc handleRequest() prépare, et isSubmitted() vérifie après préparation.
+
+
         if ($form->isSubmitted() && $form->isValid()) {
 
+            // Ici on prépare la gestion de l'image envoyée via le champ "img" du formulaire
 
-
+            // On déclare une variable avec une annotation spéciale pour aider PHP :
             /** @var UploadedFile|null $imageFile */
+            // Cela signifie que $imageFile peut contenir soit :
+            // - un objet UploadedFile (fichier envoyé)
+            // - ou null (aucun fichier envoyé)
+
+            // $form->get('img') → on accède au champ "img" du formulaire
+            // ->getData() → on récupère la valeur (c’est un fichier dans ce cas)
             $imageFile = $form->get('img')->getData();
 
+            // On vérifie si un fichier image a été envoyé (non nul)
             if ($imageFile) {
-                // Génère un nom de fichier unique avec extension
+                // uniqid() → fonction PHP qui génère une chaîne unique (ex : 656b3ef2c6a9b)
+                // $imageFile->guessExtension() → devine automatiquement l’extension (jpg, png, etc.)
+                // Le point (.) sert à concaténer les deux chaînes pour former un nom de fichier complet
                 $newFilename = uniqid() . '.' . $imageFile->guessExtension();
 
                 try {
-                    // Déplace l’image dans le dossier /public/images/
+                    // $this->getParameter() → méthode Symfony pour lire un paramètre défini dans services.yaml
+                    // Ici, on lit la valeur de "images_directory" (chemin vers le dossier public/images)
+
+                    // move() → méthode de l’objet UploadedFile
+                    // Elle déplace le fichier depuis le dossier temporaire vers le bon dossier sur le serveur
                     $imageFile->move(
-                        $this->getParameter('images_directory'),
-                        $newFilename
+                        $this->getParameter('images_directory'), // Dossier de destination
+                        $newFilename // Nom du fichier à enregistrer
                     );
 
-                    // Met à jour le nom de l’image dans le produit
+                    // $produit->setImg($newFilename)
+                    // On met à jour la propriété "img" du produit avec le nom du nouveau fichier
                     $produit->setImg($newFilename);
                 } catch (FileException $e) {
-                    // Message d’erreur si le déplacement échoue
+                    // Si une erreur se produit lors du déplacement du fichier, on affiche un message temporaire à l’utilisateur
+                    // addFlash() est une méthode de Symfony pour afficher des messages dans les vues
                     $this->addFlash('error', 'Erreur lors du téléchargement de l\'image.');
                 }
             }
 
-
-
-
-
-
-            // flush() demande à Doctrine d'enregistrer les modifications dans la base de données
+            // $em->flush() → dit à Doctrine d’écrire toutes les modifications en base de données
+            // Il regarde tous les objets qui ont été modifiés (ex : $produit) et les met à jour en SQL
             $em->flush();
+            // persist() n'est pas necessaire ici car Doctrine a deja l'objet $produit
         }
 
-        // Redirection vers la page d’administration des produits après la modification
-      return new Response('<script>window.location.href="' . $this->generateUrl('app_admin_produit') . '";</script>');
-
+        // Après la modification, on redirige l’utilisateur vers la page principale d’administration
+        // On utilise du JavaScript car la réponse est peut-être dans une modale
+        return new Response('<script>window.location.href="' . $this->generateUrl('app_admin_produit') . '";</script>');
     }
 
+
     /**
-     * Méthode qui crée un nouveau produit manuellement, sans formulaire Symfony.
-     * On lit directement les données envoyées en POST via l’objet Request.
+     * Crée un nouveau produit à partir d’un formulaire HTML classique (hors Symfony Form).
      */
     #[Route('/admin/produit/new', name: 'produit_new_manual')]
     public function newManual(Request $request, EntityManagerInterface $em, CategoryRepository $categoryRepo): Response
     {
 
-        dump($request);
-
-        // Vérifie si :
-        // - la requête est de type POST (formulaire soumis)
-        // - tous les champs nécessaires sont présents
+        dump(['Méthode' => get_class_methods($request) ]);
+        dump(['Méthode' => get_class_methods(AbstractController::class) ]);
+            
+        // Vérifie que la requête est en POST et que tous les champs nécessaires sont présents
         if (
-            $request->isMethod('POST') && // Vérifie que le formulaire est bien envoyé (en POST)
-            $request->request->get('nom') &&           // get('nom') lit la valeur du champ <input name="nom">
+            $request->isMethod('POST') &&
+            $request->request->get('nom') &&
             $request->request->get('description') &&
             $request->request->get('prix') &&
             $request->request->get('category') &&
             $request->request->get('stock')
         ) {
-            // On crée un nouveau produit vide
             $produit = new Produit();
-
-            // On remplit l'objet Produit avec les données du formulaire
-            // $request->request est un objet de type ParameterBag, qui contient les valeurs envoyées en POST
-            $produit->setNom($request->request->get('nom')); // Exemple : <input name="nom" value="Chaise">
+            $produit->setNom($request->request->get('nom'));
             $produit->setDescription($request->request->get('description'));
-            $produit->setPrix((float)$request->request->get('prix')); // On convertit en float pour éviter une erreur
+            $produit->setPrix((float)$request->request->get('prix'));
             $produit->setStock((int)$request->request->get('stock'));
+
+            // Gestion de l'image envoyée
             /** @var UploadedFile|null $imageFile */
             $imageFile = $request->files->get('img');
             if ($imageFile) {
-                // Génère un nom de fichier unique avec extension
                 $newFilename = uniqid() . '.' . $imageFile->guessExtension();
                 try {
-                    // Déplace l’image dans le dossier /public/images/
                     $imageFile->move(
                         $this->getParameter('images_directory'),
                         $newFilename
                     );
-                    // Met à jour le nom de l’image dans le produit
                     $produit->setImg($newFilename);
                 } catch (FileException $e) {
-                    // Message d’erreur si le déplacement échoue
                     $this->addFlash('error', 'Erreur lors du téléchargement de l\'image.');
                 }
             }
 
-            // On récupère l'ID de la catégorie sélectionnée dans le menu déroulant
-            $categoryId = $request->request->get('category');
-
-            // On utilise le repository pour chercher la catégorie en base de données
-            $category = $categoryRepo->find($categoryId);
-
-            // On associe cette catégorie au produit
+            // Liaison du produit avec la catégorie choisie
+            $category = $categoryRepo->find($request->request->get('category'));
             $produit->setCategory($category);
 
-            // Doctrine prépare le produit pour l’enregistrer
-            $em->persist($produit);
+            // Sauvegarde du produit
 
-            // Et Doctrine envoie les données dans la base
+            //persist() prépare Doctrine à gérer un nouvel objet (ex : un nouveau produit qui n’existe pas encore en base).
+
+            // Mais attention :
+
+            // persist() ne fait rien tout seul.
+
+            // Il faut obligatoirement appeler flush() après pour que Doctrine exécute la requête SQL INSERT.
+            $em->persist($produit);
             $em->flush();
 
-            // On ajoute un message temporaire (flash) pour dire que l’opération s’est bien passée
             $this->addFlash('success', 'Produit ajouté avec succès !');
 
-            // On redirige vers la même page pour éviter de re-soumettre le formulaire en rechargeant
             return $this->redirectToRoute('produit_new_manual');
         }
 
-        // Si on n’a pas encore soumis le formulaire :
-        // On récupère la liste des catégories disponibles pour les afficher dans le <select>
+        // Si le formulaire n’a pas encore été soumis, on affiche le formulaire
         $categories = $categoryRepo->findAll();
 
-        // On affiche la page Twig du formulaire manuel, avec les catégories à choisir
         return $this->render('admin_produit/new.html.twig', [
             'categories' => $categories,
         ]);
     }
 
-
+    /**
+     * Supprime un produit et son image associée.
+     */
     #[Route('/admin/produit/delete/{id}', name: 'produit_delete', methods: ['POST'])]
-public function delete(Produit $produit, EntityManagerInterface $em): Response
-{
-    // Supprime l'image associée si elle existe
-    $image = $produit->getImg();
-    if ($image) {
-        $imagePath = $this->getParameter('images_directory') . '/' . $image;
-        if (file_exists($imagePath)) {
-            unlink($imagePath); // Supprime le fichier du disque
+    public function delete(Produit $produit, EntityManagerInterface $em): Response
+    {
+        // Récupère le nom de l’image
+        $image = $produit->getImg();
+
+        if ($image) {
+            $imagePath = $this->getParameter('images_directory') . '/' . $image;
+
+            // Supprime le fichier image du système de fichiers
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
         }
+
+        // Supprime l'entité Produit de la base de données
+        $em->remove($produit);
+        $em->flush();
+
+        $this->addFlash('success', 'Produit supprimé avec succès.');
+
+        return $this->redirectToRoute('app_admin_produit');
     }
-
-    // Supprime le produit de la base de données
-    $em->remove($produit);
-    $em->flush();
-
-    $this->addFlash('success', 'Produit supprimé avec succès.');
-
-    return $this->redirectToRoute('app_admin_produit');
 }
-
-}
-
 
 
 

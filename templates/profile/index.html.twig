@@ -1,44 +1,55 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProfileController!{% endblock %}
+{% block title %}Hello ProfileController!
+{% endblock %}
 
 {% block body %}
 
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class=" flash-message alert alert-{{ label }}">{{ message }}</div>
-        {% endfor %}
-    {% endfor %}
-{% if app.user %}
+	{% for label, messages in app.flashes %}
+		{% for message in messages %}
+			<div class=" flash-message alert alert-{{ label }}">{{ message }}</div>
+		{% endfor %}
+	{% endfor %}
+	{% if app.user %}
 
-<div class=" flex justify-center items-center flex-col gap-10">
-{% if app.user.image %}
-    <img class="w-44 h-auto m-auto" src=" {{ asset('images/profil_image/'~ app.user.image) }} " alt="">
+		<div class=" flex justify-center items-center flex-col gap-10">
+			{% if app.user.image %}
+				<img class="w-44 h-auto m-auto" src=" {{ asset('images/profil_image/'~ app.user.image) }} " alt="">
 
-{% else %}
-    <img class="w-44 h-auto m-auto" src=" {{ asset('images/default_image/profile.png') }} " alt="">
-{% endif %}
-<div class="p-10 inline-block border justify-center items-center  ">
-<p> nom :  {{ app.user.username}} </p>
-<p> email :  {{ app.user.email}} </p>
-<p> adresse :  {{ app.user.adresse}} </p>
-<p> telephonr :  {{ app.user.telephone}} </p>
+			{% else %}
+				<img class="w-44 h-auto m-auto" src=" {{ asset('images/default_image/profile.png') }} " alt="">
+			{% endif %}
+			<div class="p-10 inline-block border justify-center items-center  ">
+				<p>
+					nom :
+					{{ app.user.username}}
+				</p>
+				<p>
+					email :
+					{{ app.user.email}}
+				</p>
+				<p>
+					adresse :
+					{{ app.user.adresse}}
+				</p>
+				<p>
+					telephonr :
+					{{ app.user.telephone}}
+				</p>
 
-</div>
+			</div>
 
-<button class="btn btn-primary"> 
+			<button class="btn btn-primary">
 
-<a href=" {{ path('profile_edit') }} ">modifier</a>
+				<a href=" {{ path('profile_edit') }} ">modifier</a>
 
-</button>
-
-
-</div>
+			</button>
 
 
+		</div>
 
-{% endif %}
 
+	{% endif %}
 
 
 {% endblock %}

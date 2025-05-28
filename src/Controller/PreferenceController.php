@@ -21,7 +21,9 @@ class PreferenceController extends AbstractController
         $nouveauTheme = $themeActuel === 'light' ? 'dark' : 'light';
 
         // Créer une réponse de redirection
-        $response = $this->redirectToRoute('home');
+      $url = $request->headers->get('referer') ?? $this->generateUrl('app_home');
+$response = $this->redirect($url);
+
 
         // Créer un cookie qui dure 1 an
         $cookie = Cookie::create('theme_preference')

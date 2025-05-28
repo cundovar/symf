@@ -35,11 +35,15 @@ class ProductClassForm extends AbstractType
             ->add('description') // Champ textarea (zone de texte)
             ->add('stock')       // Champ nombre (input type="number")
            ->add('img', FileType::class, [
-    'label' => "Image (fichier)",
-    'required' => false,
-    'mapped' => false // ⚠️ Important si l’image est traitée manuellement dans le contrôleur
-])
+                       'label' => "Image (fichier)",
+                       'required' => false,
+                       'mapped' => false // ⚠️ Important si l’image est traitée manuellement dans le contrôleur
+])                   
             ->add('prix')        // Champ nombre ou texte selon le contexte
+
+
+
+
 
             // === Champ spécial : catégorie liée au produit ===
             // Ce champ représente une relation entre Produit et Category
