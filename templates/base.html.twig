@@ -43,6 +43,49 @@
 
 			{%  include "partials/header.html.twig"  %}
 
+			{# Boucle principale : on parcourt tous les flash messages de la session #}
+{% for type, messages in app.flashes %}
+    {# 
+        - type : le type de message flash (success, danger, warning, info)
+        - messages : liste des messages de ce type (on peut en avoir plusieurs pour un même type)
+    #}
+    
+    {% for message in messages %}
+        {# 
+            - Pour chaque message, on génère une alerte Bootstrap.
+            - alert-{{ type }} : permet de colorer l'alerte en fonction du type :
+                success = vert, danger = rouge, warning = jaune, info = bleu clair
+            - alert-dismissible : permet d'ajouter un bouton pour fermer l'alerte.
+            - fade show : permet une animation douce à l'affichage.
+        #}
+        <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+            {# Affiche le message flash (texte passé dans addFlash()) #}
+            {{ message }}
+            
+            {# Bouton pour fermer l'alerte, Bootstrap 5 : btn-close + data-bs-dismiss #}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{# pour tailwind 
+{# Boucle sur tous les flash messages dans la session #}
+{# {% for type, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="p-4 mb-4 text-sm rounded-lg {{ 
+            type == 'success' ? 'text-green-800 bg-green-50' :
+            (type == 'danger' ? 'text-red-800 bg-red-50' :
+            (type == 'warning' ? 'text-yellow-800 bg-yellow-50' :
+            (type == 'info' ? 'text-blue-800 bg-blue-50' : 'text-gray-800 bg-gray-50')))
+        }}" role="alert">
+            {{ message }}
+            <button type="button" class="float-right font-bold" onclick="this.parentElement.remove()">×</button>
+        </div>
+    {% endfor %}
+{% endfor %} #} 
+
+
+
 		{% endblock %}
 
 

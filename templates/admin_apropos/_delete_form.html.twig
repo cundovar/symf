@@ -1,0 +1,4 @@
+<form data-turbo-frame="_top" method="post" action="{{ path('app_admin_apropos_delete', {'id': apropo.id}) }}" data-turbo-confirm="ok pour suprimmer ?">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ apropo.id) }}">
+    <button class="btn btn-danger">Delete</button>
+</form>

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Apropos index{% endblock %}
+
+{% block body %}
+    <h1>Apropos index</h1>
+
+    
+        {% for apropo in apropos %}
+        <article class=" w-1/2 border m-auto" >
+        
+        
+        
+         <turbo-frame id="apropos-{{apropo.id}} ">
+<h1 class=" text-4xl text-center p-20 " >  {{ apropo.titre }} </h1>
+
+<div class="flex flex-wrap justify-center items-center gap-10" >
+
+<p class="w-96 text-center  border bg-amber-200 "> {{ apropo.texte}} </p>
+<p class="w-96 text-center  border bg-amber-100 "> {{ apropo.texte2}} </p>
+
+</div>
+                <div class=" flex gap-10 justify-center w-full " >
+        
+                    <a class=" btn btn-warning " href="{{ path('app_admin_apropos_edit', {'id': apropo.id}) }}">edit</a>
+                    {{ include('admin_apropos/_delete_form.html.twig') }}
+
+                </div> 
+         
+         </turbo-frame>
+        
+        </article>
+                
+            
+        {% else %}
+            
+<div>no records found</div>
+    <a href="{{ path('app_admin_apropos_new') }}">Create new</a>
+            
+        {% endfor %}
+
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Apropos{% endblock %}
+
+{% block body %}
+    <h1>Create new Apropos</h1>
+
+    {{ include('admin_apropos/_form.html.twig',
+   {'action_path':path('app_admin_apropos_new', {id: apropo.id})}
+    ) }}
+
+    <a href="{{ path('app_admin_apropos_index') }}">back to list</a>
+{% endblock %}

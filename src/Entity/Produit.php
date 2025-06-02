@@ -275,7 +275,7 @@ class Produit
 // Méthodes courantes de ArrayCollection
 // Voici les méthodes les plus utiles que tu retrouveras dans les projets Symfony :
 
-// Méthode	Description
+
 // add($element)	Ajoute un élément dans la collection
 // removeElement($element)	Supprime un élément s’il est présent
 // contains($element)	Vérifie si l’élément est dans la collection

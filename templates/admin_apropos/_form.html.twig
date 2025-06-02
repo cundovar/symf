@@ -1,0 +1,11 @@
+{{ form_start(form, {
+    'action': action_path,
+    'attr': {'class': 'w-full max-w-lg mx-auto p-8 bg-white shadow-md rounded'}
+}) }}
+    {{ form_widget(form) }}
+    <div class="flex justify-end mt-4">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            {{ button_label|default('Enregistrer') }}
+        </button>
+    </div>
+{{ form_end(form) }}

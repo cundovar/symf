@@ -178,7 +178,9 @@ final class AdminProduitController extends AbstractController
 
         dump(['Méthode' => get_class_methods($request) ]);
         dump(['Méthode' => get_class_methods(AbstractController::class) ]);
-            
+            // dans cette methode je ne creer pas de formulaire je creer un produit directement
+
+
         // Vérifie que la requête est en POST et que tous les champs nécessaires sont présents
         if (
             $request->isMethod('POST') &&
@@ -198,6 +200,10 @@ final class AdminProduitController extends AbstractController
             /** @var UploadedFile|null $imageFile */
             $imageFile = $request->files->get('img');
             if ($imageFile) {
+                // nous creons un variable $newFilename qui contiendra le nom du fichier de l'image
+                //uniqid() → fonction PHP qui génère une chaîne unique (ex : 656b3ef2c6a9b)
+                // $imageFile->guessExtension() → devine automatiquement l’extension (jpg, png, etc.)
+                // Le point (.) sert à concaténer les deux chaînes pour former un nom de fichier complet
                 $newFilename = uniqid() . '.' . $imageFile->guessExtension();
                 try {
                     $imageFile->move(

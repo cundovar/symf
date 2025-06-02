@@ -1,15 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block metaDescription %}
-
-	<meta name="description" content="page a propos">
-
-{% endblock %}
-
+{% block title %}Hello AproposController!{% endblock %}
 
 {% block body %}
-	<h1>
-		apropos
-	</h1>
+
+{% if apropos %}
+
+<h1 class=" text-4xl text-center p-20 " >  {{ apropos.titre }} </h1>
+<div class="flex flex-wrap justify-center items-center gap-10" >
+
+<p class="w-96 text-center  border bg-amber-200 "> {{ apropos.texte}} </p>
+<p class="w-96 text-center  border bg-amber-100 "> {{ apropos.texte2}} </p>
+
+</div>
+
+{% endif %}
+
+
+
 
 {% endblock %}

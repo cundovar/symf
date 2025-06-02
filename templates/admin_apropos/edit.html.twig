@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Apropos{% endblock %}
+
+{% block body %}
+<turbo-frame id="apropos-{{apropo.id}} ">
+    <h1>Edit Apropos</h1>
+
+    {{ include('admin_apropos/_form.html.twig', {'button_label': 'Update',
+                                                  'action_path' :path('app_admin_apropos_edit', {id: apropo.id})      
+                                                                    }) }}
+
+    <a href="{{ path('app_admin_apropos_index') }}">back to list</a>
+
+    {{ include('admin_apropos/_delete_form.html.twig') }}
+
+   </turbo-frame> 
+{% endblock %}

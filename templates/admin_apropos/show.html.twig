@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Apropos{% endblock %}
+
+{% block body %}
+    <h1>Apropos</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ apropo.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ apropo.titre }}</td>
+            </tr>
+            <tr>
+                <th>Texte</th>
+                <td>{{ apropo.texte }}</td>
+            </tr>
+            <tr>
+                <th>Texte2</th>
+                <td>{{ apropo.texte2 }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_apropos_index') }}">back to list</a>
+
+    <a href="{{ path('app_admin_apropos_edit', {'id': apropo.id}) }}">edit</a>
+
+    
+{% endblock %}
