@@ -202,17 +202,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * Ajoute un panier à la collection de l'utilisateur
      * 🔁 On met aussi à jour l'autre côté de la relation (Panier -> User)
      */
-    public function addPanier(Panier $panier): static
-    {
+// Cette fonction permet d'ajouter un panier à l'utilisateur.
+// Elle prend un objet Panier en paramètre et renvoie l'utilisateur (this).
+public function addPanier(Panier $panier): static
+{
+    // Si le panier n'est pas déjà dans la liste des paniers de l'utilisateur
+    if (!$this->paniers->contains($panier)) {
+        // On ajoute le panier à la liste
+        $this->paniers->add($panier);
 
-
-        if (!$this->paniers->contains($panier)) {
-            $this->paniers->add($panier);
-            $panier->setUser($this); // synchronisation côté Panier
-        }
-
-        return $this;
+        // On indique aussi au panier quel est son utilisateur
+        // (important pour que la relation fonctionne dans les deux sens)
+        $panier->setUser($this);
     }
+
+    // On retourne l'utilisateur pour pouvoir enchaîner d'autres appels (ex: $user->addPanier($panier)->addPanier($autrePanier);)
+    return $this;
+}
+
+
+//     Pourquoi addPanier et pas setPanier ?
+
+// Différence entre add et set :
+// set → sert en général à remplacer une valeur (ou une seule entité).
+
+// Exemple : $user->setEmail('email@example.com'); — on définit un email (1 seul).
+
+// Si on faisait setPanier, cela voudrait dire : "je donne UN seul panier à l'utilisateur et j'écrase l'ancien si besoin".
+
+// add → veut dire ajouter à une liste ou une collection sans écraser.
+
+// Ici, un utilisateur peut avoir plusieurs paniers.
+
+// Donc on ajoute chaque nouveau panier dans une collection (ex: une ArrayCollection Doctrine).
 
     /**
      * Supprime un panier

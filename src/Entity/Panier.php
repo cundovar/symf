@@ -17,8 +17,11 @@ class Panier
 
     #[ORM\Column]
     private ?int $quantite = null;
-
+   // Indique qu'il s'agit d'une relation "plusieurs paniers pour un seul utilisateur".
+// Chaque panier appartient à UN utilisateur, mais un utilisateur peut avoir PLUSIEURS paniers.
     #[ORM\ManyToOne(inversedBy: 'paniers')]
+    // Définit la colonne dans la base de données pour faire la liaison (clé étrangère).
+// nullable: false signifie que le panier DOIT avoir un utilisateur, ce n'est pas optionnel.
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 

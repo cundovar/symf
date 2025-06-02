@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AproposController extends AbstractController
 {
-    #[Route('/apropos', name: 'app_apropos')]
+    #[Route('/apropos', name: 'apropos')]
     public function index(AproposRepository $repo): Response
     {
 

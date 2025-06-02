@@ -1,7 +1,13 @@
 {{ form_start(form) }}
+
+<div class="mb-4 gap-5 p-10">
+
     {{ form_widget(form, {
 
-        attr:{"class": ' text-black bg-red-500 '},
+        attr:{"class": ' form-control text-black bg-red-200'},
+       
     }) }}
+
+</div>
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

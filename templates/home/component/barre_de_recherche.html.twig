@@ -1,0 +1,37 @@
+<div class=" bg-lime-400 p-5 max-xl:w-1/2 m-auto " >
+
+
+
+	<form action="{{ path('home') }}" method="POST" data-turbo-frame="produit_">
+		<input
+		type="hidden" name="form" value="search_nom">
+		{# Très important pour savoir quel formulaire a été soumis #}
+
+		<input type="text" name="search" id="search" placeholder="Rechercher un produit..." class="form-control" required>
+
+		<button type="submit" class="btn btn-primary mt-2">Rechercher</button>
+	</form>
+
+	<turbo-frame id="produit_">
+		{% if selectedProduitSearch %}
+			<h2>Produit sélectionné :</h2>
+			<ul>
+				<li>
+					<strong>Nom :</strong>
+					{{ selectedProduitSearch.nom }}</li>
+				<li>
+					<strong>Prix :</strong>
+					{{ selectedProduitSearch.prix }}
+					€</li>
+				<li>
+					<strong>Catégorie :</strong>
+					{{ selectedProduitSearch.category.name }}</li>
+			</ul>
+		{% elseif app.request.method == 'POST' %}
+			<p>Aucun produit trouvé avec ce nom.</p>
+		{% endif %}
+	</turbo-frame>
+
+
+
+</div>

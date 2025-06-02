@@ -34,8 +34,15 @@
             
         {% else %}
             
-<div>no records found</div>
-    <a href="{{ path('app_admin_apropos_new') }}">Create new</a>
+<div>aucunes données pour la page apropos</div>
+<p class="text-red-600 text-2xl">
+ajoutez du contenu pour la page a propos, dans AdminAproposController la vue est regler pour afficher l'objet avec ID 5 donc penser à modifier l'ID dans ce controller pour afficher ces données
+</p>
+<button class="btn btn-primary">
+
+    <a href="{{ path('app_admin_apropos_new') }}">creation page a propos</a>
+
+</button>
             
         {% endfor %}
 

@@ -1,0 +1,18 @@
+<div class="m-auto text-center">
+		<h3 class="text-2xl">
+			avec methode "find()"
+		</h3>
+		<p>recuperer un produit par son id</p>
+		{% if unProduit %}
+			<p>
+				nom du produit :
+				<span class="text-red-500">
+					{{ unProduit.nom }}
+				</span>
+			</p>
+		</div>
+	{% else %}
+		<p>cette id n'existe pas
+		</p>
+	{% endif %}
+</div>

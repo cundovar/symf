@@ -24,292 +24,52 @@
 
 
 {% block body %}
+
+
 	{% if app.user and is_granted('ROLE_ADMIN') %}
 
 		<P>TU ES ADMIN
 		</P>
+	{% else %}
+		<p>
+			TU ES USER POUR ÊTRE ADMIN VAS DANS TA BASE DE DONNÉE ET ECRIS : ["ROLE_ADMIN"]
+		</p>
+		<P>POUR ACCÉDER À L'ESPACE ADMIN</P>
 	{% endif %}
 
 
-	<div id="produit-carousel" data-controller="@splidejs/splide" class="splide mb-10">
-		<div class="splide__track">
-			<ul class="splide__list">
-				{% for produit in produits %}
-					<li class="splide__slide text-center">
-						{% if produit.img %}
-							<img src="{{ asset('images/product_image/' ~ produit.img) }}" alt="{{ produit.nom }}" class="w-64 h-48 object-cover mx-auto">
-						{% else %}
-							<img src="{{ asset('images/default_image.jpg') }}" alt="Aucune image" class="w-64 h-48 object-cover mx-auto">
-						{% endif %}
-
-						<div class="mt-2">
-							<h5>{{ produit.nom }}</h5>
-							<p>{{ produit.prix }}
-								€</p>
-						</div>
-					</li>
-				{% endfor %}
-			</ul>
-		</div>
-	</div>
-
+	{# carousel #}
+	{% include "home/component/carousel.html.twig" %}
 
 	{% if app.user %}
-
-
 		<h2 class="text-2xl ">
-			Bonjour
-			{{ app.user.username}}
-		</h2>
-
-
-		{# <p>{{ dump(session.get('security_main')) }} </p>
-								<p>{{ dump(session.all) }} </p> #}
-		{{ app.request.query.get('page') }}
-
-		<p>{{ app.request.query.get('page') }}
-		</p>
-
-	{% endif %}
-
-	{% for type, messages in app.flashes %}
-		{% for message in messages %}
-			<div class="alert alert-{{ type }} alert-dismissible flash-message fade show" role="alert">
-				{{ message }}
-				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-			</div>
-		{% endfor %}
-	{% endfor %}
-
-	<div class="m-auto text-center">
-		<h3 class="text-2xl">
-			avec methode "find()"
-		</h3>
-		<p>recuperer un produit par son id</p>
-		{% if unProduit %}
-			<p>
-				nom du produit :
-				<span class="text-red-500">
-					{{ unProduit.nom }}
-				</span>
-			</p>
-		</div>
-	{% else %}
-		<p>cette id n'existe pas
-		</p>
-	{% endif %}
-</div>
-
-<div class="m-auto text-center">
-	<h3 class="text-2xl">
-		le compte des produits avec methode count()
-	</h3>
-
-	{% if countProduits %}
-
-		<p>
-			le count est :
-			{{ countProduits  }}</p>
-
+			Bonjour{{ app.user.username}}</h2>
 	{% endif %}
 
 
-</div>
+	{# find simple #}
+	{% include "home/component/find_simple.html.twig" %}
+	{# COUNT #}
+	{% include "home/component/count.html.twig" %}
+	{# form avec find() #}
+	{% include "home/component/form_find.html.twig" %}
+	{# barre de recherche 2 #}
+	{% include "home/component/barre2.html.twig" %}
+	{# form select #}
+	{% include "home/component/select.html.twig" %}
+	<div>
+		{# BARRE DE RECHERCEHE #}
+		{% include "home/component/barre_de_recherche.html.twig" %}
+	</div>
+	{# AFFICHAGE PRODUIT #}
+	{% include "home/component/main.html.twig" %}
 
 
-<div class="border m-auto text-center flex flex-col gap-20">
-	<h3 class="text-2xl">Exemple de form pour la méthode find()</h3>
-
-	<form action="{{ path('home') }}" method="POST" data-turbo-frame="produit_frame">
-		<input type="hidden" name="form" value="select_produit">
-		<select name="produit" id="produit">
-			{% if produits %}
-				{% for produit in produits %}
-					<option value="{{ produit.id }}">{{ produit.nom }}</option>
-				{% endfor %}
-			{% endif %}
-		</select>
-		<button class="btn btn-primary" type="submit">Rechercher</button>
-	</form>
-	<turbo-frame id="produit_frame">
-		{% if selectedProduit %}
-			<div class="card">
-				<h2>Produit sélectionné :</h2>
-				<ul>
-					<li>
-						<strong>Nom :</strong>
-						{{ selectedProduit.nom }}</li>
-					<li>
-						<strong>Description :</strong>
-						{{ selectedProduit.description }}</li>
-					<li>
-						<strong>Prix :</strong>
-						{{ selectedProduit.prix }}
-						€</li>
-					<li>
-						<strong>Stock :</strong>
-						{{ selectedProduit.stock }}</li>
-					<li>
-						<strong>Catégorie :</strong>
-						{{ selectedProduit.category.name }}</li>
-				</ul>
-
-				<div>
-					<img src="{{ asset('images/' ~ selectedProduit.img) }}" alt="{{ selectedProduit.nom }}" style="width: 200px;">
-				</div>
-			</div>
-		{% endif %}
-	</turbo-frame>
-
-</div>
-<div class="m-auto text-center">
-	<form action="{{ path('home') }}" method="POST" data-turbo-frame="produit_search">
-		<input type="hidden" name="form" value="search_nom">
-		<input type="text" name="search" placeholder="Nom du produit">
-		<button type="submit">Rechercher</button>
-	</form>
-
-	<turbo-frame id="produit_search">
-		{% if selectedProduit %}
-			<h2>Produit trouvé :</h2>
-			<p>{{ selectedProduit.nom }}</p>
-			<p>{{ selectedProduit.prix }}</p>
-		{% endif %}
-	</turbo-frame>
+{% endblock %}
 
 
-</div>
+{% block js %}
 
+	<script defer type="module" src=" {{ asset('script/home.js') }}"></script>
 
-<div class="m-auto text-center">
-	<h3 class="text-2xl">
-		repo et findby()</h3>
-
-	<form action="{{ path('home') }}" method="POST" data-turbo-frame="produits_frame">
-		<input type="hidden" name="form" value="select_categorie">
-		<select name="categorie" id="categorie" onchange="this.form.submit();">
-			<option value="">-- Choisir une catégorie --</option>
-			{% for item in categories %}
-				<option value="{{ item.id }}">{{ item.name }}</option>
-			{% endfor %}
-		</select>
-	</form>
-
-	<turbo-frame id="produits_frame">
-		{% if produitss %}
-			<h2>Produits de la catégorie sélectionnée :</h2>
-			<ul>
-				{% for produit in produitss %}
-					<li>{{ produit.nom }}
-						-
-						{{ produit.prix }}
-						€</li>
-				{% endfor %}
-			</ul>
-		{% else %}
-			<p>Aucun produit trouvé.</p>
-		{% endif %}
-	</turbo-frame>
-
-
-</div>
-
-<div>
-	<form action="{{ path('home') }}" method="POST" data-turbo-frame="produit_">
-		<input
-		type="hidden" name="form" value="search_nom">
-		{# Très important pour savoir quel formulaire a été soumis #}
-
-		<input type="text" name="search" id="search" placeholder="Rechercher un produit..." class="form-control" required>
-
-		<button type="submit" class="btn btn-primary mt-2">Rechercher</button>
-	</form>
-
-	<turbo-frame id="produit_">
-		{% if selectedProduitSearch %}
-			<h2>Produit sélectionné :</h2>
-			<ul>
-				<li>
-					<strong>Nom :</strong>
-					{{ selectedProduitSearch.nom }}</li>
-				<li>
-					<strong>Prix :</strong>
-					{{ selectedProduitSearch.prix }}
-					€</li>
-				<li>
-					<strong>Catégorie :</strong>
-					{{ selectedProduitSearch.category.name }}</li>
-			</ul>
-		{% elseif app.request.method == 'POST' %}
-			<p>Aucun produit trouvé avec ce nom.</p>
-		{% endif %}
-	</turbo-frame>
-
-</div>
-
-
-<main class="flex flex-wrap gap-20 justify-center items-center">
-
-	{% for produit in produits %}
-
-		<div class="border w-64 p-10 justify-center items-center bg-orange-200 m-10 ">
-
-			{% if produit.img %}
-
-				<img class="w-full object-cover" src="{{ asset('images/product_image/' ~ produit.img) }}" alt="Image de {{ produit.nom }}">
-
-			{% else %}
-				pas image
-
-			{% endif %}
-
-
-			<p>
-				<strong>Nom :</strong>
-				{{ produit.nom }}</p>
-			<p>
-				<strong>Prix :</strong>
-				{{ produit.prix }}
-				€</p>
-			<p>
-				<strong>Description :</strong>
-				{{ produit.description }}</p>
-			<p>
-				<strong>Catégorie :</strong>
-				{{ produit.category.name }}</p>
-			{% if produit.stock < 3 and produit.stock > 0 %}
-
-				<p>
-					<strong class="text-red-500">achetez vite bientot en rupture !!! :</strong>
-					stock :
-					{{ produit.stock }}</p>
-			{% elseif produit.stock >3 %}
-
-
-				<p>
-					<strong class="">stock</strong>
-					{{ produit.stock }}</p>
-
-			{% else %}
-				<p>
-					<strong class="text-red-500">
-						victime de son succès :</strong>
-					stock : 0</p>
-
-			{% endif %}
-
-
-			<form action="{{ path('panier_ajouter', { id: produit.id }) }}" method="get" class="mt-3">
-				<label for="quantite_{{ produit.id }}">Quantité :</label>
-				<input type="number" id="quantite_{{ produit.id }}" name="quantite" value="0" min="1" max="{{ produit.stock }}" class="w-16 border p-1">
-				<button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
-					🛒 Ajouter au panier
-				</button>
-			</form>
-		</div>
-	{% endfor %}
-
-
-</main>{% endblock %}{% block js %}
-
-<script defer type="module" src=" {{ asset('script/home.js') }}"></script>{% endblock %}
+{% endblock %}

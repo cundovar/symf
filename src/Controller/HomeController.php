@@ -20,7 +20,8 @@ final class HomeController extends AbstractController
         dump(['Méthode' => get_class_methods($request) ]);
         dump(['Méthode' => get_class_methods(AbstractController::class) ]);
         dump(['Méthode' => get_class_methods(ProduitRepository::class) ]);
-        
+        $session = $request->getSession(); 
+          dump($session->all()); 
         
         dump([
             'methodes' => get_class_methods($repo)
@@ -148,7 +149,7 @@ if ($request->isMethod('POST')) {
         ]);
     }
 
-      // Appel à ta méthode du repository
+      // Appel à la méthode du repository
       
       
       if ($formType === 'select_categorie') {
@@ -190,11 +191,6 @@ if ($formType === 'search_nom') {
 
 
         
-    }
-    #[Route('/apropos', name: 'apropos')]
-    public function apropos(): Response
-    {
-        return $this->render('apropos/index.html.twig');
     }
   
 
