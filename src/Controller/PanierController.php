@@ -31,38 +31,75 @@ final class PanierController extends AbstractController
     }
 
     // Permet d'ajouter un produit dans le panier
-    #[Route('/panier/ajouter/{id}', name: 'panier_ajouter')]
-    public function ajouter(
-        Produit $produit,
-        Request $request,
-        EntityManagerInterface $em,
-        PanierRepository $repo
-    ): Response {
-        $user = $this->getUser();
-        // On récupère la quantité demandée (minimum 1 si vide ou incorrect)
-        $quantite = max(1, (int) $request->query->get('quantite', 1));
+  // Route pour accéder à l'action : /panier/ajouter/{id}
+// {id} correspond à l'identifiant du produit à ajouter au panier
+#[Route('/panier/ajouter/{id}', name: 'panier_ajouter')]
+public function ajouter(
+    // Symfony va automatiquement chercher le Produit correspondant à l'id dans l'URL
+    Produit $produit,
+    // Représente la requête HTTP (GET, POST...) pour accéder aux paramètres envoyés par l'utilisateur
+    Request $request,
+    // Permet d'interagir avec la base de données (INSERT, UPDATE, DELETE)
+    EntityManagerInterface $em,
+    // Permet de récupérer des lignes du panier liées à l'utilisateur dans la base de données
+    PanierRepository $repo
+): Response {
+    // Récupère l'utilisateur actuellement connecté
+    $user = $this->getUser();
 
-        // On vérifie si le produit est déjà dans le panier de l'utilisateur
-        $ligne = $repo->findOneBy(['user' => $user, 'produit' => $produit]);
+    // On récupère la quantité demandée dans l'URL via la query string (ex: ?quantite=2)
+    // Si aucune quantité n'est fournie ou si ce n'est pas un nombre valide, on prend 1
+    $quantite = max(1, (int) $request->query->get('quantite', 1));
 
-        if ($ligne) {
-            // Si le produit est déjà là, on augmente la quantité
-            $ligne->setQuantite($ligne->getQuantite() + $quantite);
-        } else {
-            // Sinon, on crée une nouvelle ligne de panier
-            $ligne = new Panier();
-            $ligne->setUser($user)
-                  ->setProduit($produit)
-                  ->setQuantite($quantite);
-            $em->persist($ligne); // On prépare pour l'enregistrement
-        }
+    // On cherche si une ligne de panier existe déjà pour ce produit et cet utilisateur
+    // findOneBy cherche une seule entité en fonction des critères passés
+    $ligne = $repo->findOneBy(['user' => $user, 'produit' => $produit]);
+//     Détail de findOneBy()
+// Méthode : findOneBy(array $criteria)
 
-        $em->flush(); // On enregistre dans la base de données
+// But : Récupérer un seul enregistrement dans la base de données qui correspond aux critères donnés.
 
-        $this->addFlash('success', 'Produit ajouté au panier.');
-        // Redirige vers la page précédente
-        return $this->redirect($request->headers->get('referer'));
+// Paramètre $criteria : Un tableau associatif où :
+
+// La clé est le nom d'un champ ou d'une propriété de l'entité.
+
+// La valeur est ce qu'on veut chercher.
+
+// Doctrine va transformer ce tableau en une requête SQL de type :
+
+// sql
+// Copier
+// Modifier
+// SELECT * FROM <table> WHERE user_id = :user AND produit_id = :produit LIMIT 1;
+
+    if ($ligne) {
+        // Si une ligne existe déjà (le produit est déjà dans le panier),
+        // on ajoute simplement la quantité demandée à la quantité existante
+        $ligne->setQuantite($ligne->getQuantite() + $quantite);
+    } else {
+        // Sinon (le produit n'est pas encore dans le panier),
+        // on crée une nouvelle ligne de panier
+        $ligne = new Panier();
+        // On associe l'utilisateur à cette ligne
+        $ligne->setUser($user)
+              // On associe le produit à cette ligne
+              ->setProduit($produit)
+              // On définit la quantité
+              ->setQuantite($quantite);
+        // On indique à Doctrine qu'on veut sauvegarder cette nouvelle ligne
+        $em->persist($ligne);
     }
+
+    // Envoie toutes les modifications faites avec persist() à la base de données
+    $em->flush();
+
+    // Ajoute un message flash pour informer l'utilisateur que le produit a bien été ajouté
+    $this->addFlash('success', 'Produit ajouté au panier.');
+
+    // Redirige l'utilisateur vers la page d'où il vient (la page précédente)
+    return $this->redirect($request->headers->get('referer'));
+}
+
 
     // Permet de retirer un produit du panier
     #[Route('/retirer/{id}', name: 'panier_retirer')]
