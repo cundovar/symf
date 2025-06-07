@@ -1,0 +1,28 @@
+ 
+ 	{% if app.user %}
+		<h2 class="text-2xl ">
+			Bonjour {{ app.user.username}}</h2>
+	{% endif %}
+ 
+ 
+ <div class="flex justify-center mb-20 {{ theme }}">
+ 
+ 
+	{% if app.user and is_granted('ROLE_ADMIN') %}
+
+		<P>TU ES ADMIN
+		</P>
+	{% endif %}
+	{% if app.user and not is_granted('ROLE_ADMIN') %}
+		<p class="text-red-500">
+			TU ES USER POUR ÊTRE ADMIN VAS DANS TA BASE DE DONNÉE ET ECRIS : ["ROLE_ADMIN"]
+		</p>
+		<P>POUR ACCÉDER À L'ESPACE ADMIN</P>
+ {% endif %}
+
+ {% if not app.user %}
+AFIN D'AVOIR ACCÈS AUX ESPACE ADMIN TU DOIS T'INSCRIRE 
+ {% endif %}
+ 
+ 
+ </div>

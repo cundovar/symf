@@ -37,7 +37,7 @@
 
 	{# Appliquer la classe body selon le cookie #}
 	{% set theme = app.request.cookies.get('theme_preference') ?? 'light' %}
-	<body class="{{ theme }}">
+	<body class="{{ theme }} flex flex-col min-h-screen">
 		{% block Header %}
 
 
@@ -59,7 +59,7 @@
 										            - fade show : permet une animation douce à l'affichage.
 										        #}
 					<div
-						class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+						class="alert alert-{{ type }} flash-message alert-dismissible fade show" role="alert">
 						{# Affiche le message flash (texte passé dans addFlash()) #}
 						{{ message }}
 
@@ -89,13 +89,19 @@
 		{% endblock %}
 
 
-		<div class="container m-auto border bg-slate-200 border-lime-600"> 
+		<div class="container m-auto flex flex-1 flex-col  {{ theme }}"> 
 		
 		  {% block body %}{% endblock %}
 
 		</div>
 
 		</body>
+
+		<footer class="flex justify-center items-start border h-52 {{ theme }}">
+			
+			<p>footer</p>
+		</footer>
+		
 
 
 	</html>

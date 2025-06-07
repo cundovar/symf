@@ -1,0 +1,79 @@
+/* Style général du formulaire */
+form {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style des champs */
+  form input[type="text"],
+  form input[type="email"],
+  form input[type="password"],
+  form input[type="tel"] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 10px 0 20px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+    font-size: 16px;
+  }
+  
+  /* Focus effet */
+  form input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  /* Labels */
+  form label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+    color: #333;
+  }
+  
+  /* Checkbox */
+  form input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  /* Container pour checkbox + label */
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  /* Bouton submit */
+  form button[type="submit"] {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 14px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+  }
+  
+  form button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Message d'erreur Symfony */
+  form .form-error-message {
+    color: #d9534f;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    font-size: 14px;
+  }
+  

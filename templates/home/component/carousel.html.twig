@@ -1,4 +1,14 @@
-<div id="produit-carousel" data-controller="@splidejs/splide" data-turbo="false" class="splide mb-10">
+
+{% if produits|length  is same as(0) %}
+<div class="bg-warning p-5">
+
+<p class="text-center text-black">pas de produits, pas de carousel</p>
+
+</div>
+
+{% else %}
+
+<div id="produit-carousel" data-controller="@splidejs/splide" data-turbo="false" class="splide mb-10 {{ theme }}">
 		<div class="splide__track">
 			<ul class="splide__list">
 				{% for produit in produits %}
@@ -19,3 +29,4 @@
 			</ul>
 		</div>
 	</div>
+{% endif %}

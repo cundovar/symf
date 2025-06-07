@@ -1,4 +1,4 @@
-<div class="m-auto text-center p-10 bg-teal-200">
+<div class="m-auto text-center p-10 bg-teal-200 {{ theme }}">
 	<form action="{{ path('home') }}" method="POST" data-turbo-frame="produit_search">
 		<input type="hidden" name="form" value="search_nom">
 		<input type="text" name="search" placeholder="Nom du produit">
@@ -7,7 +7,7 @@
 
 	<turbo-frame id="produit_search">
 		{% if selectedProduit %}
-			<h2>Produit trouvé :</h2>
+			<h2>Produit trouvé :</h2>	
 			<p>{{ selectedProduit.nom }}</p>
 			<p>{{ selectedProduit.prix }}</p>
 		{% endif %}

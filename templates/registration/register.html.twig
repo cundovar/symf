@@ -3,52 +3,21 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <h1>inscription</h1>
 
-    {{ form_errors(registrationForm) }}
-     
-
-
-     {# demararage du formulaire, génère une balise form #}
-    {{ form_start(registrationForm) }}
-    <div class="border text- bg-yellow-300 p-10">
-        {{ form_row(registrationForm.username,{
-            attr:{"class": 'f-red'},
-            label_attr:{"class":' text-black text-5xl '},
-            label:'votre nom svp'
-
-        } )}}
-    
+{{ form_start(registrationForm) }}
+    {{ form_row(registrationForm.email) }}
+    {{ form_row(registrationForm.telephone) }}
+    {{ form_row(registrationForm.adresse) }}
+    {{ form_row(registrationForm.username) }}
+    <div class="border p-2 m-2">
+    <p>les conditions d'utilisation de notre site ....</p>
     </div>
-
-    <div>
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'mot de passe'
-        }) }}
-    
+    <div class="checkbox-container">
+        {{ form_row(registrationForm.agreeTerms) }}
     </div>
+    {{ form_row(registrationForm.plainPassword) }}
+    <button type="submit">Register</button>
+{{ form_end(registrationForm) }}
 
-    <div>
-        {{ form_row(registrationForm.telephone, {
-   
-        }) }}
-    
-    </div>
-    <div>
-        {{ form_row(registrationForm.adresse, {
-           
-        }) }}
-    
-    </div>
-
-    <div>
-    
-        {{ form_row(registrationForm.agreeTerms,{
-
-            label:"cochez si ok "
-        } ) }}
-    </div>
-
-        <button type="submit" class="btn">inscription </button>
-    {{ form_end(registrationForm) }}
 {% endblock %}

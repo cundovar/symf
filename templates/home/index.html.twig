@@ -25,26 +25,22 @@
 
 {% block body %}
 
-
-	{% if app.user and is_granted('ROLE_ADMIN') %}
-
-		<P>TU ES ADMIN
-		</P>
-	{% else %}
-		<p>
-			TU ES USER POUR ÊTRE ADMIN VAS DANS TA BASE DE DONNÉE ET ECRIS : ["ROLE_ADMIN"]
-		</p>
-		<P>POUR ACCÉDER À L'ESPACE ADMIN</P>
-	{% endif %}
-
+{% include "home/component/conditionUser.html.twig" %}
 
 	{# carousel #}
 	{% include "home/component/carousel.html.twig" %}
 
-	{% if app.user %}
-		<h2 class="text-2xl ">
-			Bonjour{{ app.user.username}}</h2>
-	{% endif %}
+
+
+	{# AFFICHAGE PRODUIT #}
+	{% include "home/component/main.html.twig" %}
+  {% if produits|length  > 0 %}
+       <div class="flex flex-col m-auto xl:w-1/2 gap-2">
+         <p class="text-center p-1 shadow-xl">clique ici pour voir des exemples avec methodes find() findby() count()...  </p>
+        <button class="btn btn-primary w-16 m-auto" onclick="document.getElementById('toggle-content').classList.toggle('hidden')">voir</button>
+	   </div>
+
+<div id="toggle-content" class="flex flex-col gap-20 m-auto xl:w-1/2 hidden {{ theme }}">
 
 
 	{# find simple #}
@@ -57,14 +53,24 @@
 	{% include "home/component/barre2.html.twig" %}
 	{# form select #}
 	{% include "home/component/select.html.twig" %}
-	<div>
+	<div class="{{ theme }}">
 		{# BARRE DE RECHERCEHE #}
 		{% include "home/component/barre_de_recherche.html.twig" %}
 	</div>
-	{# AFFICHAGE PRODUIT #}
-	{% include "home/component/main.html.twig" %}
 
 
+
+</div>
+
+{% else %}
+
+<div class="flex flex-col m-auto xl:w-1/2 gap-2 bg-lime-100 p-5 ">
+
+<p class="text-center text-black">Tu pourras voir des exemples avec methodes find() findby() count()... quand tu auras des produits</p>
+
+</div>
+
+{% endif %}
 {% endblock %}
 
 

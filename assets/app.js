@@ -12,6 +12,7 @@ import './bootstrap.js';
 import './styles/app.css';
 import './styles/home.css';
 import './styles/components/boutonDarkLight.css'
+import './styles/form_register.css'
 
 
 

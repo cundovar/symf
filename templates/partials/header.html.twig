@@ -10,16 +10,16 @@
 	</ul>
 </nav> #}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light {{ theme }}">
 
 
   
-  <div class="container-fluid">
-    <a class="navbar-brand" href=" {{ path('home') }} ">Mon site</a>
+  <div class="container-fluid {{ theme }}">
+    <a class="navbar-brand {{ theme }}" href=" {{ path('home') }} ">Mon site</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse {{ theme }}" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href=" {{ path('home') }}  ">home</a>
@@ -27,11 +27,34 @@
         <li class="nav-item">
           <a class="nav-link" href=" {{ path('apropos') }}  ">a propos</a>
         </li>
+        <div class=" absolute top-0 right-0 m-1 max-lg:right-[15%]">
+        
+           <a href="{{ path('changer_theme') }}" class="btnTheme float-end">
+               <p>Changer de thème </p>
+               <p>(actuel : {{ theme }})</p>
+            </a>
+        
+        
+          <a class="{{ theme }}" href="{{ path('panier_index') }}">
+        🛒 Panier
+        {% if app.user and app.user.getNombreArticlesPanier() > 0 %}
+            <span class="badge bg-warning text-dark">
+                {{ app.user.getNombreArticlesPanier() }}
+            </span>
+        {% else %}         
+            <span class="badge bg-warning text-dark">
+                0
+            </span>
+        {% endif %}
+
+    </a>
+        </div>
+        
         {% if app.user %}
         
         
         <li class="nav-item">
-          <a class="nav-link" href=" {{ path('profile') }}  ">profile</a>
+          <a class="nav-link {{ theme }}" href=" {{ path('profile') }}  ">profile</a>
         </li>
         
         {% endif %}
@@ -40,23 +63,23 @@
 
         {% if app.user %}
         
-          <a class="nav-link" href=" {{ path('logout') }}  ">déconnection</a>
+          <a class="nav-link {{ theme }}" href=" {{ path('logout') }}  ">déconnection</a>
         {% else %}
-          <a class="nav-link" href=" {{ path('login') }}  ">connection</a>
-          <a class="nav-link" href=" {{ path('inscription') }}  ">inscription</a>
+          <a class="nav-link {{ theme }}" href=" {{ path('login') }}  ">connection</a>
+          <a class="nav-link {{ theme }}" href=" {{ path('inscription') }}  ">inscription</a>
           
         {% endif %}
         
         </li>
         {% if  is_granted('ROLE_ADMIN') %}
          <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle {{ theme }}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             admin
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{{path('app_admin_category_index')}} ">categories</a></li>
-            <li><a class="dropdown-item" href="{{path('app_admin_produit')}}">produit</a></li>
-            <li><a class="dropdown-item" href="{{path('app_admin_apropos_index')}}">a propos</a></li>
+            <li><a class="dropdown-item {{ theme }}" href="{{path('app_admin_category_index')}} ">categories</a></li>
+            <li><a class="dropdown-item {{ theme }}" href="{{path('app_admin_produit')}}">produit</a></li>
+            <li><a class="dropdown-item {{ theme }}" href="{{path('app_admin_apropos_index')}}">a propos</a></li>
             {# <li><hr class="dropdown-divider"></li> #}
             {# <li><a class="dropdown-item" href="#">Something else here</a></li> #}
           </ul>
@@ -70,27 +93,9 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form> #}
         
-            <a href="{{ path('changer_theme') }}" class="btnTheme float-end">
-               <p>Changer de thème </p>
-               <p>(actuel : {{ theme }})</p>
-            </a>
+         
 
 
-          <a class=" float-end" href="{{ path('panier_index') }}">
-        🛒 Panier
-
-        {% if app.user and app.user.getNombreArticlesPanier() > 0 %}
-            <span class="badge bg-warning text-dark">
-                {{ app.user.getNombreArticlesPanier() }}
-            </span>
-        {% else %}
-          
-            <span class="badge bg-warning text-dark">
-                0
-            </span>
-            {% endif %}
-
-    </a>
         
         
         {% endif %}

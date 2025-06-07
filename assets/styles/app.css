@@ -26,8 +26,8 @@ body.light {
     color: #000000 !important;
 }
 
-body.dark {
-    background-color: #eca0a0 !important;
+body.dark,div.dark {
+    background-color: #4b4848 !important;
     color: #4cafd6 !important;
 }
 
