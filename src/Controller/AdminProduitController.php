@@ -27,6 +27,11 @@ final class AdminProduitController extends AbstractController
 
     {
 
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Accès refusé. Vous devez être administrateur.');
+            return $this->redirectToRoute('home'); 
+        }
+
 
         // Récupère tous les produits en base
         $produits = $repo->findAll();
@@ -71,6 +76,10 @@ final class AdminProduitController extends AbstractController
     #[Route('admin/produits/update/{id}', name: 'produit_update', methods: ['POST'])]
     public function update(Request $request, Produit $produit, EntityManagerInterface $em): Response
     {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('danger', 'Accès refusé. Vous devez être administrateur.');
+            return $this->redirectToRoute('home'); 
+        }
         // On utilise la méthode createForm() qui vient de la classe AbstractController (héritée par notre contrôleur)
         // Elle sert à créer un objet Form Symfony basé sur une classe de formulaire (ici ProductClassForm)
         // On lui passe 2 arguments : 
@@ -175,6 +184,10 @@ final class AdminProduitController extends AbstractController
     #[Route('/admin/produit/new', name: 'produit_new_manual')]
     public function newManual(Request $request, EntityManagerInterface $em, CategoryRepository $categoryRepo): Response
     {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('danger', 'Accès refusé. Vous devez être administrateur.');
+            return $this->redirectToRoute('home'); 
+        }
 
         dump(['Méthode' => get_class_methods($request) ]);
         dump(['Méthode' => get_class_methods(AbstractController::class) ]);
@@ -212,7 +225,7 @@ final class AdminProduitController extends AbstractController
                     );
                     $produit->setImg($newFilename);
                 } catch (FileException $e) {
-                    $this->addFlash('error', 'Erreur lors du téléchargement de l\'image.');
+                    $this->addFlash('danger', 'Erreur lors du téléchargement de l\'image.');
                 }
             }
 
@@ -251,6 +264,10 @@ final class AdminProduitController extends AbstractController
     #[Route('/admin/produit/delete/{id}', name: 'produit_delete', methods: ['POST'])]
     public function delete(Produit $produit, EntityManagerInterface $em): Response
     {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('danger', 'Accès refusé. Vous devez être administrateur.');
+            return $this->redirectToRoute('home'); 
+        }
         // Récupère le nom de l’image
         $image = $produit->getImg();
 

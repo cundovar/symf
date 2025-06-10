@@ -30,8 +30,25 @@
         <div class=" absolute top-0 right-0 m-1 max-lg:right-[15%]">
         
            <a href="{{ path('changer_theme') }}" class="btnTheme float-end">
-               <p>Changer de thème </p>
-               <p>(actuel : {{ theme }})</p>
+           
+               <div>
+
+   
+     {% if theme is same as('light') %}
+ 
+     
+    <p class="text-sm -">dark</p>
+    {{ ux_icon('mingcute:moon-fill', { class: 'bi-icon' })}}
+     
+    
+     
+     
+{% else %}
+    <p class="text-sm -">light</p>
+    {{ ux_icon('bi:lightbulb-fill', { class: 'bi-icon' }) }}
+{% endif %}
+               
+               </div>
             </a>
         
         
@@ -40,6 +57,11 @@
         {% if app.user and app.user.getNombreArticlesPanier() > 0 %}
             <span class="badge bg-warning text-dark">
                 {{ app.user.getNombreArticlesPanier() }}
+            </span>
+        {% elseif app.session.get('paniers') is defined %}         
+            <span class="badge bg-warning text-dark">
+                {{ app.session.get('paniers')|length }}
+           
             </span>
         {% else %}         
             <span class="badge bg-warning text-dark">

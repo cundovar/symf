@@ -36,7 +36,7 @@
 	</head>
 
 	{# Appliquer la classe body selon le cookie #}
-	{% set theme = app.request.cookies.get('theme_preference') ?? 'light' %}
+	{% set theme = app.request.cookies.get('theme_preference') ?? 'night' %}
 	<body class="{{ theme }} flex flex-col min-h-screen">
 		{% block Header %}
 

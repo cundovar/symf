@@ -8,7 +8,6 @@
 {% block stylesheets %}
 	{# ← Important pour ne pas supprimer les styles existants #}
 	{{ parent() }}
-
 	{# Ici, {{ parent() }} insère le contenu du bloc du base.html.twig, puis tu ajoutes ta propre feuille de style. #}
 	<link rel="stylesheet" href="{{ asset('styles/home.css') }}">
 	<link
@@ -25,6 +24,14 @@
 
 {% block body %}
 
+{% if app.user and app.session.get('paniers') is defined and app.session.get('paniers')|length > 0 %}
+
+<p class="text-center text-red-500" >Vous remarquez que vous avez un panier non vide, tu es connecté mais ton panier est vide.</p>
+<p class="text-center text-red-500">nous entrons à un niveau superieur de developpement web pour gerer cette incohérence.....</p>
+
+{% endif %}
+
+
 {% include "home/component/conditionUser.html.twig" %}
 
 	{# carousel #}
@@ -34,11 +41,8 @@
 
 	{# AFFICHAGE PRODUIT #}
 	{% include "home/component/main.html.twig" %}
-  {% if produits|length  > 0 %}
-       <div class="flex flex-col m-auto xl:w-1/2 gap-2">
-         <p class="text-center p-1 shadow-xl">clique ici pour voir des exemples avec methodes find() findby() count()...  </p>
-        <button class="btn btn-primary w-16 m-auto" onclick="document.getElementById('toggle-content').classList.toggle('hidden')">voir</button>
-	   </div>
+  {% if produits|length  > 1 %}
+   {% include "home/component/voirJsClick.html.twig" %} 
 
 <div id="toggle-content" class="flex flex-col gap-20 m-auto xl:w-1/2 hidden {{ theme }}">
 
@@ -62,11 +66,18 @@
 
 </div>
 
+{% elseif produits|length  == 1 %}
+
+<p class="text-center text-red-500"> si tu as un seul produit, ce n'est pas très pertinant de cliquer ...</p>
+{% include "home/component/voirMethodeAuClick.html.twig" %}
+
 {% else %}
 
 <div class="flex flex-col m-auto xl:w-1/2 gap-2 bg-lime-100 p-5 ">
 
-<p class="text-center text-black">Tu pourras voir des exemples avec methodes find() findby() count()... quand tu auras des produits</p>
+    <p class="text-center text-black">
+	  Tu pourras voir des exemples avec methodes find() findby() count()... quand tu auras des produits
+	</p>
 
 </div>
 

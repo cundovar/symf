@@ -2,9 +2,7 @@
 
 FROM php:8.2-fpm
 
-
-
-    # Install dependencies and extensions
+# Install dépendance et extension
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
@@ -14,9 +12,14 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libicu-dev \
     libmcrypt-dev \
+    curl \
+    gnupg \
     && docker-php-ext-install pdo_mysql intl opcache zip
 
-
+# Install Node.js et npm
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -27,10 +30,10 @@ WORKDIR /var/www/html
 # Copy Symfony project
 COPY . .
 
-# Install PHP dependencies
+# Install PHP dependences
 RUN composer install --no-interaction --optimize-autoloader
 
-# Set permissions (optionnel si tu as un user spécifique)
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html/var /var/www/html/vendor
 
 # Expose port 9000 for php-fpm

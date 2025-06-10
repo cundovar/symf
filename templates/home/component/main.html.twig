@@ -58,10 +58,10 @@
 		</div>
 
 	{% endfor %}
-	<div class="mb-20">
 	
-	<div class="flex p-5 mt-2  bg-slate-500 rounded-xl shadow-xl flex-col gap-2 xl:w-1/2 m-auto">
 		{% if produits|length is same as(0) %}
+	<div class="mb-20">
+	<div class="flex p-5 mt-2  bg-slate-500 rounded-xl shadow-xl flex-col gap-2 xl:w-1/2 m-auto">
 			<p class="text-center">il y a pas de produits dans la base de données</p>
 			<p class="text-red-300 text-center">
 				Ajouter les categories  
@@ -70,11 +70,11 @@
 				<a class="text-red-500 text-xl font-bold" href="{{ path('produit_new_manual') }}">ici</a> 
 				pour avoir le carousel et le findall des produits sur cette page
 			</p>
+	</div>
+	</div>
 		{% endif %}
-	</div>
 	
 	
-	</div>
 
 
 </main>

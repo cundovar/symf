@@ -17,6 +17,12 @@ final class AdminCategoryController extends AbstractController
     #[Route(name: 'app_admin_category_index', methods: ['GET'])]
     public function index(CategoryRepository $categoryRepository): Response
     {
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('danger', 'Accès refusé. Vous devez être administrateur.');
+            return $this->redirectToRoute('home'); 
+        }
+        
         return $this->render('admin_category/index.html.twig', [
             'categories' => $categoryRepository->findAll(),
             
@@ -26,6 +32,11 @@ final class AdminCategoryController extends AbstractController
     #[Route('/new', name: 'app_admin_category_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('danger', 'Accès refusé. Vous devez être administrateur.');
+            return $this->redirectToRoute('home'); 
+        }
         $category = new Category();
         $form = $this->createForm(CategoryForm::class, $category);
         $form->handleRequest($request);
@@ -46,6 +57,11 @@ final class AdminCategoryController extends AbstractController
     #[Route('/{id}', name: 'app_admin_category_show', methods: ['GET'])]
     public function show(Category $category): Response
     {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('danger', 'Accès refusé. Vous devez être administrateur.');
+            return $this->redirectToRoute('home'); 
+        }
+
         return $this->render('admin_category/show.html.twig', [
             'category' => $category,
         ]);
@@ -54,6 +70,10 @@ final class AdminCategoryController extends AbstractController
     #[Route('/{id}/edit', name: 'app_admin_category_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('danger', 'Accès refusé. Vous devez être administrateur.');
+            return $this->redirectToRoute('home'); 
+        }
         $form = $this->createForm(CategoryForm::class, $category);
         $form->handleRequest($request);
 
@@ -70,8 +90,11 @@ final class AdminCategoryController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_admin_category_delete', methods: ['POST'])]
+
+    
     public function delete(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
+       
         if ($this->isCsrfTokenValid('delete' . $category->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
