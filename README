@@ -24,12 +24,26 @@ Vous pouvez vous aider lors du lancement de docker en utilisant le fichier Makef
 
 1/ lancer docker : docker-compose up -d --build
 
-2/ faire la migration de la base de données en entrant dans le terminal symfony sur docker :
+
+2/ pour entrer dans le terminal symfony sur docker : docker-compose exec php bash 
+
+3/ puis composer install  pour installation dependences vendor....
+4/puis npm install pour installation dependences node...
+
+5/ faire la migration de la base de données en entrant dans le terminal symfony sur docker :
 docker-compose exec php php bin/console doctrine:migrations:migrate
 
- !!! pour entrer dans le terminal symfony sur docker : docker-compose exec php bash 
+6/ !!!!  si vous avez cette erreur :
 
-3/ pour quitter le terminal symfony sur docker : exit 
+ An exception has been thrown during the rendering of a template ("Built Tailwind CSS file does not exist: run "php bin/console tailwind:build" to generate it") in base.html.twig at line 20.
+
+ --> dans le même terminal tapez : 
+ 
+ php bin/console tailwind:build
+
+
+7/ pour quitter le terminal symfony sur docker : exit 
+
 
 ///--------------------PORTS--------------------///
 
