@@ -16,6 +16,8 @@ final class TestProdController extends AbstractController
     #[Route(name: 'app_test_prod_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
+
+        
         $products = $entityManager
             ->getRepository(Product::class)
             ->findAll();

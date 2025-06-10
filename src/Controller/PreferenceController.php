@@ -15,14 +15,24 @@ class PreferenceController extends AbstractController
     public function changerTheme(Request $request): Response
     {
         // Lire le thème actuel
+        // recuperation depuis le cookie theme_preference
         $themeActuel = $request->cookies->get('theme_preference', 'light');
 
         // Alterner entre light et dark
         $nouveauTheme = $themeActuel === 'light' ? 'dark' : 'light';
 
         // Créer une réponse de redirection
+        // recuperation de la page precedente ou page d'accueil
+         // quand utiliser request->headers : quand on veut recuperer des informations de la requete HTTP
+         // difference entre $request->headers et $request->request :
+         // $request->headers c'est un objet qui contient toutes les informations de la requête HTTP (données du formulaire, méthode utilisée, etc.)
+         // $request->request c'est un objet qui contient toutes les informations du formulaire
+        
+        
+        // get('referer') c'est la page precedente
       $url = $request->headers->get('referer') ?? $this->generateUrl('app_home');
-$response = $this->redirect($url);
+      // redirection vers la page precedente ou page d'accueil
+       $response = $this->redirect($url);
 
 
         // Créer un cookie qui dure 1 an

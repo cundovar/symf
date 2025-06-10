@@ -26,21 +26,34 @@ Toute commanede pour makefile commence par "make " exemple : make up
 1/ lancer docker : docker-compose up -d --build
 
 
-2/ pour entrer dans le terminal symfony sur docker : docker-compose exec php bash 
 
-3/ puis composer install  pour installation dependences vendor....
-4/puis npm install pour installation dependences node...
+2/ pour entrer dans le terminal symfony sur docker : 
+
+docker-compose exec php bash 
+
+pour faire toutes les installations vous devrez utiliser ce terminal
+
+
+3/ composer install  -> pour installation dependences vendor....
+
+4/ npm install   -> pour installation dependences node...
 
 5/ faire la migration de la base de données en entrant dans le terminal symfony sur docker :
  php bin/console doctrine:migrations:migrate
+
+
+[
 
 6/ !!!!  si vous avez cette erreur :
 
  An exception has been thrown during the rendering of a template ("Built Tailwind CSS file does not exist: run "php bin/console tailwind:build" to generate it") in base.html.twig at line 20.
 
- --> dans le même terminal tapez : 
+ --> dans le même terminal  tapez : 
  
  php bin/console tailwind:build
+
+]
+
 
 
 7/ pour quitter le terminal symfony sur docker : exit 
@@ -59,13 +72,17 @@ password : root
 
 4/ pour arrêter docker : docker-compose down
 
+[
+
 5/ si les ports sont déjà utiliser sur votre pc vous pouvez les modifier dans le fichier compose.yaml :
 
 exemple de changement de ports -> phpmyadmin  - "8083:80" pour phpmyadmin
                                -> nginx  - "8086:80" pour afficher symfony
                              
-
 puis refaire un build : docker-compose up -d --build
+
+]
+
         
 
 ///----------------------///

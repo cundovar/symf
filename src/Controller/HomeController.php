@@ -135,13 +135,17 @@ final class HomeController extends AbstractController
     // commencemant du form select avec la fonction find()  façon dynamique
 $selectedProduit=null;
 if ($request->isMethod('POST')) {
+
+    // recuperation du type de formulaire
     $formType = $request->request->get('form');
 
+    // si la valeur de formType est select_produit
     if ($formType === 'select_produit') {
         $idProduit = $request->request->get('produit');
         $selectedProduit = $em->getRepository(Produit::class)->find($idProduit);
     }
 
+    // si la valeur de formType est search_nom
     if ($formType === 'search_nom') {
         $search = $request->request->get('search');
         $selectedProduit = $em->getRepository(Produit::class)->findOneBy([
@@ -149,15 +153,16 @@ if ($request->isMethod('POST')) {
         ]);
     }
 
-      // Appel à la méthode du repository
-      
-      
-      if ($formType === 'select_categorie') {
+    // si la valeur de formType est select_categorie
+    if ($formType === 'select_categorie') {
           $categorieId = $request->request->get('categorie');
           if ($categorieId) {
               // Attention ici il faut récupérer l'objet Category via l'id
               $category = $em->getRepository(Category::class)->find($categorieId);
               if ($category) {
+                // Appel à la méthode du repository
+                // category est le nom du champ dans la table produit
+                // $category est l'objet Category récupéré
                   $produitss = $repo->findBy([
                       'category' => $category
                     ]);

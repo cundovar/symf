@@ -46,9 +46,11 @@ final class ProfileController extends AbstractController
                     $image->move($this->getParameter('images_profile'), $filename);
                     $user->setImage($filename);
                 } catch (FileException $e) {
-                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
+                    $this->addFlash('danger', 'Erreur lors de l\'upload de l\'image.');
                 }
             }
+
+            
 
             // Mot de passe (optionnel)
             $plainPassword = $form->get('plainPassword')->getData();
