@@ -18,6 +18,7 @@ image nginx : nginx:stable
 image phpmyadmin : phpmyadmin/phpmyadmin
 
 Vous pouvez vous aider lors du lancement de docker en utilisant le fichier Makefile si installé
+Toute commanede pour makefile commence par "make " exemple : make up
 
 ///--------------------------------------------------///
 
