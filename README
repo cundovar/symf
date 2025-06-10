@@ -46,9 +46,11 @@ password : root
 
 5/ si les ports sont déjà utiliser sur votre pc vous pouvez les modifier dans le fichier compose.yaml :
 
-exemple de changement de ports -> phpmyadmin  - "8083:80"
-                               -> nginx  - "8086:80"
-                               
+exemple de changement de ports -> phpmyadmin  - "8083:80" pour phpmyadmin
+                               -> nginx  - "8086:80" pour afficher symfony
+                             
+
+puis refaire un build : docker-compose up -d --build
         
 
 ///----------------------///
