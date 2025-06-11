@@ -1,60 +1,99 @@
 services:
   php:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: .  # Chemin vers le dossier contenant le Dockerfile (le contexte de construction)
+      dockerfile: Dockerfile  # Nom du Dockerfile à utiliser pour construire l'image PHP
     volumes:
-      - .:/var/www/html
+      - .:/var/www/html  # Monte le dossier courant sur le conteneur à /var/www/html (code source PHP visible dans le conteneur)
     depends_on:
       db:
-        condition: service_healthy
+        condition: service_healthy  # Attend que la base de données soit prête avant de démarrer PHP (grâce au healthcheck)
     networks:
-      - connectPerso
+      - connectPerso  # Utilise le réseau personnalisé nommé "connectPerso"
 
   nginx:
-    image: nginx:stable
+    image: nginx:stable  # Utilise une image stable de NGINX
     ports:
-      - "8085:80"
+      - "8085:80"  # Expose le port 80 du conteneur sur le port 8085 de la machine hôte
     volumes:
-      - .:/var/www/html
-      - ./ngninx.conf:/etc/nginx/nginx.conf
+      - .:/var/www/html  # Monte le dossier courant comme racine web du serveur NGINX
+      - ./ngninx.conf:/etc/nginx/nginx.conf  # Remplace la configuration par défaut de NGINX par un fichier local personnalisé
     depends_on:
-      - php
+      - php  # Le service NGINX doit attendre que PHP soit prêt (mais pas forcément en bonne santé)
     networks:
-      - connectPerso
+      - connectPerso  # Connecté au réseau personnalisé "connectPerso"
 
   db:
-    image: mysql:8.0
+    image: mysql:8.0  # Utilise l'image officielle de MySQL version 8.0
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: cour
+      MYSQL_ROOT_PASSWORD: root  # Mot de passe pour l'utilisateur root de MySQL
+      MYSQL_DATABASE: cour  # Crée une base de données initiale nommée "cour"
     ports:
-      - "3308:3306"
+      - "3308:3306"  # Expose le port MySQL 3306 à l'extérieur via le port 3308
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql  # Stocke les données MySQL de manière persistante via un volume nommé
     networks:
-      - connectPerso
+      - connectPerso  # Connecté au réseau "connectPerso"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]  # Vérifie si MySQL répond bien à une commande ping
+      interval: 10s  # Répète la vérification toutes les 10 secondes
+      timeout: 5s  # Timeout de 5 secondes pour chaque tentative
+      retries: 5  # Nombre de tentatives avant de considérer le conteneur comme non sain
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin  # Utilise l'image officielle de phpMyAdmin
     ports:
-      - "8082:80"
+      - "8082:80"  # Expose l’interface web de phpMyAdmin sur le port 8082 de la machine hôte
     environment:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: root
+      PMA_HOST: db  # Nom du service MySQL auquel phpMyAdmin doit se connecter
+      MYSQL_ROOT_PASSWORD: root  # Mot de passe utilisé pour se connecter avec le compte root
     depends_on:
-      - db
+      - db  # phpMyAdmin ne démarre qu'après que le service de base de données soit actif
     networks:
-      - connectPerso
+      - connectPerso  # Connecté au même réseau que les autres services
 
 networks:
   connectPerso:
-    driver: bridge
+    driver: bridge  # Crée un réseau Docker de type "bridge" pour permettre la communication entre les conteneurs
 
 volumes:
-  mysql_data:
+  mysql_data:  # Volume nommé pour persister les données MySQL même après l'arrêt ou la suppression du conteneur
+
+
+# pourquoi l'image mysql ?
+# le service db correspond à une instance de MySQL, qui sert de système de gestion de base de données relationnelle (SGBD). 
+# Il stocke les données de ton application PHP : comptes utilisateurs, commandes, messages, etc.
+# Les données sont persistées via le volume mysql_data, ce qui permet de conserver les données même si tu arrêtes les conteneurs.
+# Le service phpmyadmin est une interface graphique qui permet de voir et manipuler facilement les données dans MySQL.
+# sans mysql pas de phpmyadmin
+
+# Pourquoi phpMyAdmin ?
+# phpMyAdmin est une interface web graphique qui permet d’interagir facilement avec le serveur MySQL.
+# Il permet d’exécuter des requêtes SQL, de créer/modifier/supprimer des bases de données, des tables et des enregistrements.
+# Il est très utile en développement pour gérer et visualiser les données sans avoir à utiliser la ligne de commande.
+# Cependant, phpMyAdmin n’est qu’un outil de gestion : la base de données MySQL fonctionne très bien sans lui.
+# Donc, sans phpMyAdmin, la base de données reste fonctionnelle, mais il faut la gérer via d'autres moyens (CLI, scripts, etc.).
+
+
+# Pourquoi NGINX ?
+# NGINX est un serveur web très performant et léger, utilisé pour servir les fichiers d'un site web.
+# Il agit aussi comme un reverse proxy : il reçoit les requêtes HTTP(S) du client (navigateur)
+# et les redirige vers le bon service en interne (ici vers PHP via PHP-FPM).
+# Il sert les fichiers statiques (HTML, CSS, JS, images) directement, sans passer par PHP.
+# Pour les fichiers PHP, il utilise FastCGI pour transmettre la requête à PHP-FPM dans le conteneur PHP.
+# Il permet aussi de gérer les en-têtes HTTP (headers), les cookies, le cache, les redirections, les erreurs personnalisées, etc.
+# NGINX ne traite pas lui-même le code PHP, mais c’est lui qui "orchestré" l’accès à PHP-FPM.
+# En production, il est quasiment indispensable pour assurer de bonnes performances et une structure propre.
+# En développement, il permet de simuler un environnement réaliste.
+
+
+# Pourquoi PHP ?
+# PHP est un langage de programmation serveur utilisé pour générer dynamiquement du contenu HTML.
+# Il permet de traiter les requêtes HTTP reçues via un serveur web comme NGINX ou Apache.
+# PHP gère la logique métier, les sessions, les cookies, les formulaires, les connexions aux bases de données, etc.
+# Dans cette stack, PHP est exécuté via PHP-FPM (FastCGI Process Manager), qui reçoit les requêtes PHP transmises par NGINX.
+# Il est essentiel pour faire fonctionner les sites dynamiques écrits en PHP (comme WordPress, Laravel, Symfony, etc.).
+# Sans PHP, aucune page dynamique écrite en PHP ne peut être exécutée.
+
+
+
