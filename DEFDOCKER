@@ -1,0 +1,158 @@
+#####################################
+#     DÉFINITIONS DES CONCEPTS DOCKER
+#####################################
+
+-------------------------------
+IMAGE
+-------------------------------
+Une image est un modèle (template) pour créer un conteneur.
+Elle contient tout le nécessaire pour faire tourner une app : code, dépendances, OS minimal, etc.
+
+-------------------------------
+CONTENEUR
+-------------------------------
+Un conteneur est une instance d’une image.
+C’est une application qui tourne de manière isolée.
+
+-------------------------------
+DOCKERFILE
+-------------------------------
+Un fichier texte contenant des instructions pour construire une image Docker.
+
+-------------------------------
+BUILD
+-------------------------------
+Créer une image Docker à partir d’un Dockerfile.
+
+-------------------------------
+RUN (dans un Dockerfile)
+-------------------------------
+Exécute une commande pendant la construction de l’image.
+
+-------------------------------
+CMD
+-------------------------------
+Définit la commande qui sera exécutée quand le conteneur démarre.
+
+-------------------------------
+ENTRYPOINT
+-------------------------------
+Comme CMD, mais ne peut pas être écrasé facilement lors de l’exécution.
+
+-------------------------------
+EXPOSE
+-------------------------------
+Indique les ports que le conteneur va écouter (ne publie pas le port automatiquement).
+
+-------------------------------
+WORKDIR
+-------------------------------
+Définit le dossier dans lequel les commandes suivantes seront exécutées.
+
+-------------------------------
+COPY
+-------------------------------
+Copie des fichiers de ta machine locale vers l’image Docker.
+
+-------------------------------
+ADD
+-------------------------------
+Comme COPY, mais permet aussi de décompresser automatiquement une archive.
+
+-------------------------------
+VOLUME
+-------------------------------
+Un volume est un espace de stockage persistant pour les données du conteneur.
+Il permet de garder les données même si le conteneur est supprimé.
+
+-------------------------------
+BIND MOUNT
+-------------------------------
+Permet de lier un dossier local avec un dossier du conteneur.
+Modifications en temps réel (utile en dev).
+
+-------------------------------
+PORT MAPPING (ex: "8080:80")
+-------------------------------
+Redirige un port de ta machine vers un port du conteneur.
+Exemple : "localhost:8080" redirigé vers le port 80 dans le conteneur.
+
+-------------------------------
+NETWORK
+-------------------------------
+Permet aux conteneurs de communiquer entre eux.
+Ils peuvent se voir par leur nom (ex: php, db).
+
+-------------------------------
+ENV (ou environment)
+-------------------------------
+Définit des variables d’environnement accessibles dans le conteneur.
+Exemple : mots de passe, configuration...
+
+-------------------------------
+depends_on
+-------------------------------
+Définit dans quel ordre les services doivent démarrer.
+Note : ne garantit pas que le service est prêt, juste qu’il est lancé.
+
+-------------------------------
+HEALTHCHECK
+-------------------------------
+Permet de vérifier si un conteneur fonctionne correctement.
+
+-------------------------------
+docker-compose.yml
+-------------------------------
+Fichier qui décrit plusieurs services Docker pour qu’ils fonctionnent ensemble (multi-conteneurs).
+
+-------------------------------
+docker build
+-------------------------------
+Commande pour construire une image à partir d’un Dockerfile.
+
+-------------------------------
+docker run
+-------------------------------
+Commande pour démarrer un conteneur à partir d’une image.
+
+-------------------------------
+docker ps
+-------------------------------
+Liste les conteneurs en cours d'exécution.
+
+-------------------------------
+docker exec
+-------------------------------
+Permet d’exécuter une commande à l’intérieur d’un conteneur en cours.
+
+-------------------------------
+docker logs
+-------------------------------
+Affiche les logs d’un conteneur.
+
+-------------------------------
+docker stop / start / rm
+-------------------------------
+Arrêter, démarrer ou supprimer un conteneur.
+
+-------------------------------
+docker volume ls / rm / prune
+-------------------------------
+Lister, supprimer ou nettoyer les volumes.
+
+-------------------------------
+docker network ls / create
+-------------------------------
+Lister ou créer des réseaux Docker.
+
+-------------------------------
+TAG
+-------------------------------
+Un tag est une version d'une image.
+Exemple : `php:8.2-fpm` → `php` est le nom, `8.2-fpm` est le tag.
+
+-------------------------------
+ALPINE
+-------------------------------
+Une version très légère de Linux souvent utilisée dans les images Docker (plus rapide à télécharger).
+

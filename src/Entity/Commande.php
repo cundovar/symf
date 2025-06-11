@@ -2,6 +2,21 @@
 
 namespace App\Entity;
 
+// Une commande (Commande) peut contenir plusieurs produits, et chaque produit peut être commandé dans plusieurs commandes. Cela s'appelle une relation many-to-many, mais ici elle est enrichie (c’est-à-dire qu’on doit stocker plus que les seules références entre les entités).
+
+// ➡️ Dans ce cas, on introduit une entité associative appelée LigneCommande pour représenter :
+
+// Le produit commandé (Produit)
+
+// La quantité
+
+// Le prix unitaire au moment de la commande
+
+// Une remise éventuelle
+
+// Une référence vers la commande
+
+
 use App\Repository\CommandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -84,25 +99,49 @@ class Commande
         return $this->ligneCommandes;
     }
 
-    public function addLigneCommande(LigneCommande $ligneCommande): static
-    {
-        if (!$this->ligneCommandes->contains($ligneCommande)) {
-            $this->ligneCommandes->add($ligneCommande);
-            $ligneCommande->setCommande($this);
-        }
+/**
+ * Ajoute une ligne de commande à cette commande.
+ *
 
-        return $this;
+ */
+public function addLigneCommande(LigneCommande $ligneCommande): static
+{
+    // Vérifie si la ligne de commande n'est pas déjà présente dans la collection
+    if (!$this->ligneCommandes->contains($ligneCommande)) {
+        // Ajoute la ligne de commande à la collection
+        $this->ligneCommandes->add($ligneCommande);
+
+        // Définit la propriété "commande" de la ligne pour qu'elle pointe vers cette commande
+        // Cela permet de maintenir la relation bidirectionnelle cohérente
+        $ligneCommande->setCommande($this);
     }
 
-    public function removeLigneCommande(LigneCommande $ligneCommande): static
-    {
-        if ($this->ligneCommandes->removeElement($ligneCommande)) {
-            // set the owning side to null (unless already changed)
-            if ($ligneCommande->getCommande() === $this) {
-                $ligneCommande->setCommande(null);
-            }
-        }
+    // Retourne l'objet courant (this) pour permettre l'appel en chaîne
+    return $this;
+}
 
-        return $this;
+/**
+ * Supprime une ligne de commande de cette commande.
+ *
+
+ */
+public function removeLigneCommande(LigneCommande $ligneCommande): static
+{
+    // Supprime la ligne de commande de la collection
+    // La méthode removeElement retourne true si l'élément a été supprimé
+    if ($this->ligneCommandes->removeElement($ligneCommande)) {
+
+        // Vérifie si la ligne de commande pointe encore vers cette commande
+        // (au cas où la relation n'aurait pas déjà été modifiée)
+        if ($ligneCommande->getCommande() === $this) {
+            // Détruit la relation côté LigneCommande
+            // Cela évite que la ligne continue à pointer vers une commande inexistante
+            $ligneCommande->setCommande(null);
+        }
     }
+
+    // Retourne l'objet 
+    return $this;
+}
+
 }
