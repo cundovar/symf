@@ -42,13 +42,28 @@
 	{# AFFICHAGE PRODUIT #}
 	{% include "home/component/main.html.twig" %}
   {% if produits|length  > 1 %}
-   {% include "home/component/voirJsClick.html.twig" %} 
+   {% include "home/component/voirMethodeAuClick.html.twig" %} 
+{% elseif produits|length  == 1 %}
 
-<div id="toggle-content" class="flex flex-col gap-20 m-auto xl:w-1/2 hidden {{ theme }}">
+<p class="text-center text-red-500"> si tu as un seul produit, ce n'est pas très pertinant de cliquer ...</p>
+  {% include "home/component/voirMethodeAuClick.html.twig" %}
+
+{% else %}
+
+<div class="flex flex-col m-auto xl:w-1/2 gap-2 bg-lime-100 p-5 ">
+
+    <p class="text-center text-black">
+	  Tu pourras voir des exemples avec methodes find() findby() count()... quand tu auras des produits
+	</p>
+
+</div>
+
+{% endif %}
+
+<div id="toggle-content" class=" bg-black flex-col gap-20 m-auto xl:w-1/2 hidden border  ">
 
 
-	{# find simple #}
-	{% include "home/component/find_simple.html.twig" %}
+
 	{# COUNT #}
 	{% include "home/component/count.html.twig" %}
 	{# form avec find() #}
@@ -66,22 +81,6 @@
 
 </div>
 
-{% elseif produits|length  == 1 %}
-
-<p class="text-center text-red-500"> si tu as un seul produit, ce n'est pas très pertinant de cliquer ...</p>
-{% include "home/component/voirMethodeAuClick.html.twig" %}
-
-{% else %}
-
-<div class="flex flex-col m-auto xl:w-1/2 gap-2 bg-lime-100 p-5 ">
-
-    <p class="text-center text-black">
-	  Tu pourras voir des exemples avec methodes find() findby() count()... quand tu auras des produits
-	</p>
-
-</div>
-
-{% endif %}
 {% endblock %}
 
 

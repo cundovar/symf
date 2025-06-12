@@ -33,6 +33,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # Cette méthode évite d’installer Composer manuellement
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# ⚡ Installation de Symfony CLI 
+RUN curl -sS https://get.symfony.com/cli/installer | bash \
+    && mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
+
 # Définition du répertoire de travail principal dans le conteneur
 # C’est ici que tout le code Symfony sera copié et exécuté
 WORKDIR /var/www/html
