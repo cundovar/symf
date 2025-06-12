@@ -12,12 +12,6 @@ Elle est conçue pour être **indépendante de toute configuration spécifique �
 
 ---
 
-
-
-
-
-
-
 ## 🖼️ Images Docker utilisées
 
 - **PHP** : `php:8.2`
