@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile  # Nom du Dockerfile à utiliser pour construire l'image PHP
     volumes:
       - .:/var/www/html  # Monte le dossier courant sur le conteneur à /var/www/html (code source PHP visible dans le conteneur)
+      # « Docker, prends tout le contenu du dossier où se trouve docker-compose.yml et monte-le dans le dossier /var/www/html du conteneur. »
     depends_on:
       db:
         condition: service_healthy  # Attend que la base de données soit prête avant de démarrer PHP (grâce au healthcheck)

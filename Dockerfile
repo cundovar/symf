@@ -55,3 +55,17 @@ EXPOSE 9000
 
 # CMD : Définit la commande à exécuter par défaut quand le conteneur démarre
 CMD ["php-fpm"]
+
+
+# pour ngning plutôt qu'apache ? 
+
+
+# | Critère                 | NGINX                                       | Apache                                |
+# | ----------------------- | ------------------------------------------- | ------------------------------------- |
+# | 🧠 Architecture         | Événementielle (asynchrone) ⚡               | Processus/Thread par requête 🐢       |
+# | 📈 Performance statique | Ultra rapide (images, CSS, JS...)           | Correct, mais moins efficace          |
+# | 🛠️ Avec PHP-FPM        | 🔥 Conçu pour ça !                          | Possible mais moins "naturel"         |
+# | 🌀 Charge élevée        | Gère mieux les grosses charges (asynchrone) | Peut vite consommer beaucoup de RAM   |
+# | 🔧 Config (en prod)     | Moderne, plus concise                       | Très complète, parfois lourde         |
+# | 🐳 Avec Docker          | Léger, rapide à lancer                      | Plus lourd, moins optimisé par défaut |
+
