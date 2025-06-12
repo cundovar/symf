@@ -26,6 +26,10 @@ composer:
 	@echo "📦 Composer install dans PHP..."
 	docker-compose exec php composer install
 
+composer-update:
+	@echo "📦 Composer update dans PHP..."
+	docker-compose exec php composer update
+
 composer-require:
 	@read -p "Quel package Composer installer ? " pkg; \
 	docker-compose exec php composer require $$pkg
