@@ -3,6 +3,9 @@
 Cette application est **dockerisée**.  
 Elle est conçue pour être **indépendante de toute configuration spécifique à votre PC** 🐳
 
+
+
+
 ---
 
 ## 📁 Fichiers Docker à la racine du projet
