@@ -1,13 +1,12 @@
 services:
   - type: web
     name: symfony-app
-    env: php
-    buildCommand: "composer install --no-dev --optimize-autoloader"
-    startCommand: "php -S 0.0.0.0:10000 -t public"
+    env: docker
+    plan: free
     envVars:
       - key: APP_ENV
         value: prod
       - key: APP_SECRET
         generateValue: true
       - key: DATABASE_URL
-        value: "pgsql://user:password@hostname:5432/dbname"
+        value: "pgsql://user:password@host:5432/dbname"
