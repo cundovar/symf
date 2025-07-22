@@ -16,18 +16,20 @@ WORKDIR /var/www/html
 
 COPY . .
 
-# Active les variables Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_NO_INTERACTION=1
 ENV APP_ENV=prod
 
-# Prépare le cache Symfony pour éviter les plantages
+# Crée le dossier cache et log si nécessaire
 RUN mkdir -p var/cache var/log && chmod -R 777 var
 
-# Installe les dépendances PHP sans dev
+# Installation des dépendances PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Compile les assets (nécessite APP_ENV, var/, etc.)
+# ✅ Compilation Tailwind AVANT asset-map
+RUN php bin/console tailwind:build
+
+# ✅ Compilation des assets Symfony
 RUN php bin/console asset-map:compile
 
 EXPOSE 10000
