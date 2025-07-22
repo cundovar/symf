@@ -17,28 +17,28 @@ final class HomeController extends AbstractController
     public function index(Request $request,ProduitRepository $repo,EntityManagerInterface $em): Response
     {
         
-        dump(['Méthode' => get_class_methods($request) ]);
-        dump(['Méthode' => get_class_methods(AbstractController::class) ]);
-        dump(['Méthode' => get_class_methods(ProduitRepository::class) ]);
-        $session = $request->getSession(); 
-          dump($session->all()); 
+        // dump(['Méthode' => get_class_methods($request) ]);
+        // dump(['Méthode' => get_class_methods(AbstractController::class) ]);
+        // dump(['Méthode' => get_class_methods(ProduitRepository::class) ]);
+        // $session = $request->getSession(); 
+        //   dump($session->all()); 
         
-        dump([
-            'methodes' => get_class_methods($repo)
-        ]);
+        // dump([
+        //     'methodes' => get_class_methods($repo)
+        // ]);
         
-        dump([
-            'Méthode' => $request->getMethod(),
-            'URL complète' => $request->getUri(),
-            'Chemin URL' => $request->getPathInfo(),
-            'Paramètres GET' => $request->query->all(),
-            'Paramètres POST' => $request->request->all(),
-            'Cookies' => $request->cookies->all(),
-            'Fichiers' => $request->files->all(),
-            'En-têtes' => $request->headers->all(),
-            'IP client' => $request->getClientIp(),
-            'Est AJAX ?' => $request->isXmlHttpRequest(),
-        ]);
+        // dump([
+        //     'Méthode' => $request->getMethod(),
+        //     'URL complète' => $request->getUri(),
+        //     'Chemin URL' => $request->getPathInfo(),
+        //     'Paramètres GET' => $request->query->all(),
+        //     'Paramètres POST' => $request->request->all(),
+        //     'Cookies' => $request->cookies->all(),
+        //     'Fichiers' => $request->files->all(),
+        //     'En-têtes' => $request->headers->all(),
+        //     'IP client' => $request->getClientIp(),
+        //     'Est AJAX ?' => $request->isXmlHttpRequest(),
+        // ]);
         
         /**
          * __construct()
@@ -125,12 +125,12 @@ final class HomeController extends AbstractController
         $selectedProduitSearch = null;
         // Accéder à la session
         $session = $request->getSession(); // recuperation de l'objet session
-        dump($unProduit);
-        dump($countProduits);
-        dump($findByProduits);
-        $session->set('test1',"valeur2");
+        // dump($unProduit);
+        // dump($countProduits);
+        // dump($findByProduits);
+        // $session->set('test1',"valeur2");
         
-        dump($session);
+        // dump($session);
         
     // commencemant du form select avec la fonction find()  façon dynamique
 $selectedProduit=null;
