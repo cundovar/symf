@@ -9,7 +9,8 @@ Une image est un modèle (template) pour créer un conteneur.
 Elle contient tout le nécessaire pour faire tourner une app : code, dépendances, OS minimal, etc.
 
 -------------------------------
-CONTENEUR
+CONTENEUR 
+gfgfgfgfgfgfg
 -------------------------------
 Un conteneur est une instance d’une image.
 C’est une application qui tourne de manière isolée.
