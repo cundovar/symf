@@ -2,23 +2,23 @@
 
 FROM php:8.2-fpm
 
-# Installation des dépendances système
+# Installation des dépendances système nécessaires à Symfony + MySQL + Tailwind
 RUN apt-get update && apt-get install -y \
     zip unzip git curl libicu-dev libonig-dev libxml2-dev \
-    libzip-dev libpq-dev nodejs npm \
-    && docker-php-ext-install intl opcache pdo pdo_mysql pdo_pgsql zip
+    libzip-dev nodejs npm \
+    && docker-php-ext-install intl opcache pdo pdo_mysql zip
 
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Symfony CLI (optionnel)
+# Symfony CLI
 RUN curl -sS https://get.symfony.com/cli/installer | bash \
     && mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
-# Répertoire de travail
+# Dossier de travail
 WORKDIR /var/www/html
 
-# Copie du code source
+# Copie des fichiers
 COPY . .
 
 # Variables d’environnement
@@ -26,25 +26,22 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_NO_INTERACTION=1
 ENV APP_ENV=prod
 
-# Crée les dossiers de cache + logs
+# Prépare les dossiers de cache et logs
 RUN mkdir -p var/cache var/log && chmod -R 777 var
 
-# Installation des dépendances PHP
+# Installe les dépendances Symfony
 RUN composer install --no-dev --optimize-autoloader
 
-# Applique les migrations Doctrine
-RUN php bin/console doctrine:migrations:migrate --no-interaction
-
-# Compile Tailwind
+# Compile Tailwind CSS
 RUN php bin/console tailwind:build
 
-# Compile les assets (AssetMapper)
+# Compile les assets AssetMapper
 RUN php bin/console asset-map:compile
 
-# Port exposé
+# Expose le port
 EXPOSE 10000
 
-# Serveur PHP interne (à adapter en prod)
+# Entrypoint personnalisé
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 CMD ["/entrypoint.sh"]
