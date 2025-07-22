@@ -45,4 +45,6 @@ RUN php bin/console asset-map:compile
 EXPOSE 10000
 
 # Serveur PHP interne (à adapter en prod)
-CMD ["php", "-S", "0.0.0.0:10000", "-t", "public"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+CMD ["/entrypoint.sh"]
