@@ -16,7 +16,8 @@ RUN curl -sS https://get.symfony.com/cli/installer | bash \
 
 WORKDIR /var/www/html
 COPY . .
-
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_NO_INTERACTION=1
 RUN composer install --no-dev --optimize-autoloader
 
 # Compile les assets avec AssetMapper
